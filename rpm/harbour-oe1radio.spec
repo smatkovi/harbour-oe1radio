@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.5.2
+Version:    0.6.0
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -57,6 +57,20 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.6.0-1
+- Angaben zum Podcast: Bild, Autor, Beschreibung (antippen klappt sie auf),
+  Zahl der Folgen und Rechte. Die Daten kamen beim Laden der Folgen ohnehin
+  mit und wurden bisher weggeworfen. Dazu im Pulley, was auch die
+  Android-App dort anbietet: im Browser oeffnen, bei Spotify oeffnen,
+  Feed-Adresse kopieren.
+- Die Bilder der Radiothek waren ueberall leer: sie stehen nicht unter
+  image.url, sondern als benannte Fassungen unter
+  image.versions.<name>.path -- und zwischen den Fassungen liegt ein
+  "hashCode", der keine ist. Betraf auch die Podcastliste.
+- Der drehende Kringel ist jetzt rot: beim BusyIndicator traegt die palette
+  nicht (innen sitzt ein HighlightImage, das seine Farbe aus dem Theme
+  nimmt), er hat dafuer eine eigene Eigenschaft "color".
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.5.2-1
 - Herunterladen sah aus, als taete es nichts: in der Zeile stand bis zum
   Schluss gar nichts, und erst am Ende erschien das Zeichen. Jetzt zeigt

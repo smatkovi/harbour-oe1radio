@@ -30,6 +30,27 @@ QString loopAdresse(const QString &loopStreamId)
             .arg(QString::fromLatin1(QUrl::toPercentEncoding(loopStreamId)));
 }
 
+// Die Bilder der Radiothek stehen nicht unter "url", sondern als benannte
+// Fassungen unter image.versions.<name>.path -- und zwischen den Fassungen
+// liegt noch ein "hashCode", der keine ist. 400x400 ("id3art") reicht fuer
+// ein Telefon; sonst die erste brauchbare.
+QString bildAus(const QJsonObject &bild)
+{
+    const QJsonObject fassungen = bild.value(QStringLiteral("versions")).toObject();
+    const QJsonObject bevorzugt = fassungen.value(QStringLiteral("id3art")).toObject();
+    if (!bevorzugt.isEmpty())
+        return bevorzugt.value(QStringLiteral("path")).toString();
+    for (auto it = fassungen.constBegin(); it != fassungen.constEnd(); ++it) {
+        if (!it.value().isObject())
+            continue;       // hashCode
+        const QString pfad = it.value().toObject()
+                .value(QStringLiteral("path")).toString();
+        if (!pfad.isEmpty())
+            return pfad;
+    }
+    return QString();
+}
+
 } // namespace
 
 Api::Api(QObject *parent)
@@ -209,8 +230,7 @@ void Api::ladePodcasts()
             m[QStringLiteral("titel")]  = p.value(QStringLiteral("title")).toString();
             m[QStringLiteral("text")]   = p.value(QStringLiteral("description")).toString();
             m[QStringLiteral("anzahl")] = p.value(QStringLiteral("episodeCount")).toInt();
-            m[QStringLiteral("bild")]   = p.value(QStringLiteral("image")).toObject()
-                    .value(QStringLiteral("url")).toString();
+            m[QStringLiteral("bild")]   = bildAus(p.value(QStringLiteral("image")).toObject());
             aus << m;
         }
         emit podcastsGeladen(aus);
@@ -231,8 +251,24 @@ void Api::ladeFolgen(int podcastId)
         }
         const QJsonObject nutz = QJsonDocument::fromJson(a->readAll())
                 .object().value(QStringLiteral("payload")).toObject();
-        const QString feed = nutz.value(QStringLiteral("urls")).toObject()
-                .value(QStringLiteral("feed")).toString();
+        const QJsonObject adressen = nutz.value(QStringLiteral("urls")).toObject();
+
+        // Die Beschreibung faellt hier ohnehin an -- sie gehoert auf die
+        // Seite, nicht in den Papierkorb.
+        QVariantMap p;
+        p[QStringLiteral("titel")]   = nutz.value(QStringLiteral("title")).toString();
+        p[QStringLiteral("text")]    = nutz.value(QStringLiteral("description")).toString();
+        p[QStringLiteral("autor")]   = nutz.value(QStringLiteral("author")).toString();
+        p[QStringLiteral("rechte")]  = nutz.value(QStringLiteral("copyright")).toString();
+        p[QStringLiteral("anzahl")]  = nutz.value(QStringLiteral("episodeCount")).toInt();
+        p[QStringLiteral("bild")]    = bildAus(nutz.value(QStringLiteral("image")).toObject());
+        p[QStringLiteral("feed")]    = adressen.value(QStringLiteral("feed")).toString();
+        p[QStringLiteral("spotify")] = adressen.value(QStringLiteral("spotify")).toString();
+        p[QStringLiteral("seite")]   = nutz.value(QStringLiteral("link")).toObject()
+                .value(QStringLiteral("url")).toString();
+        emit podcastGeladen(p);
+
+        const QString feed = adressen.value(QStringLiteral("feed")).toString();
         if (feed.isEmpty()) {
             emit folgenGeladen({});
             return;

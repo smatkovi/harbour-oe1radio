@@ -79,6 +79,7 @@ signals:
     void sendungGeladen(const QVariantMap &sendung);
     void podcastsGeladen(const QVariantList &podcasts);
     void folgenGeladen(const QVariantList &folgen);
+    void podcastGeladen(const QVariantMap &podcast);
     void beitraegeGeladen(const QVariantList &beitraege);
     void journaleGeladen(const QVariantList &tage);
     void sucheFertig(const QString &text, const QVariantList &treffer);

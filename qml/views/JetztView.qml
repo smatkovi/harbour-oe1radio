@@ -175,7 +175,10 @@ Item {
     }
 
     BusyIndicator {
-        palette.highlightColor: Farben.rot
+        // Nicht ueber die palette: der Kringel ist ein HighlightImage
+        // im Inneren und nimmt seine Farbe aus dem Theme. Die eigene
+        // Eigenschaft "color" wirkt (nachgemessen).
+        color: Farben.rot
         anchors.centerIn: parent
         size: BusyIndicatorSize.Large
         running: oe1.busy && ansicht.sendungen.length === 0

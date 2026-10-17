@@ -126,7 +126,10 @@ Column {
     }
 
     BusyIndicator {
-        palette.highlightColor: Farben.rot
+        // Nicht ueber die palette: der Kringel ist ein HighlightImage
+        // im Inneren und nimmt seine Farbe aus dem Theme. Die eigene
+        // Eigenschaft "color" wirkt (nachgemessen).
+        color: Farben.rot
         anchors.horizontalCenter: parent.horizontalCenter
         size: BusyIndicatorSize.Small
         running: Spieler.laedt

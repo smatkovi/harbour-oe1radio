@@ -15,23 +15,100 @@ Page {
     property int podcastId: 0
     property string podcastTitel: ""
     property var folgen: []
+    property var podcast: ({})
 
     Component.onCompleted: oe1.ladeFolgen(podcastId)
 
     Connections {
         target: oe1
         onFolgenGeladen: seite.folgen = folgen
+        onPodcastGeladen: seite.podcast = podcast
     }
 
     SilicaListView {
         anchors.fill: parent
         model: seite.folgen
 
+        Pulley {
+            PulleyEintrag {
+                visible: !!seite.podcast.seite
+                text: qsTr("Im Browser öffnen")
+                onClicked: Qt.openUrlExternally(seite.podcast.seite)
+            }
+            PulleyEintrag {
+                visible: !!seite.podcast.spotify
+                text: qsTr("Bei Spotify öffnen")
+                onClicked: Qt.openUrlExternally(seite.podcast.spotify)
+            }
+            PulleyEintrag {
+                visible: !!seite.podcast.feed
+                text: qsTr("Feed-Adresse kopieren")
+                onClicked: Clipboard.text = seite.podcast.feed
+            }
+            PulleyEintrag {
+                text: qsTr("Neu laden")
+                onClicked: oe1.ladeFolgen(seite.podcastId)
+            }
+        }
+
         header: Column {
             width: seite.width
+            spacing: Theme.paddingSmall
+
             Titel {
                 title: seite.podcastTitel
+                description: seite.podcast.autor || ""
             }
+
+            // Was der Dienst ueber den Podcast hergibt -- bisher wurde es
+            // beim Laden der Folgen mitgeliefert und weggeworfen.
+            Row {
+                x: Theme.horizontalPageMargin
+                width: parent.width - 2 * Theme.horizontalPageMargin
+                spacing: Theme.paddingMedium
+                visible: bild.visible || beschreibung.text !== ""
+
+                Image {
+                    id: bild
+                    width: Theme.itemSizeLarge
+                    height: width
+                    fillMode: Image.PreserveAspectCrop
+                    clip: true
+                    asynchronous: true
+                    source: seite.podcast.bild || ""
+                    visible: source != "" && status === Image.Ready
+                }
+
+                Label {
+                    id: beschreibung
+                    width: parent.width - (bild.visible ? bild.width + Theme.paddingMedium : 0)
+                    text: seite.podcast.text || ""
+                    wrapMode: Text.Wrap
+                    // Antippen klappt den ganzen Text auf.
+                    maximumLineCount: aufgeklappt ? 99 : 4
+                    elide: Text.ElideRight
+                    font.pixelSize: Theme.fontSizeExtraSmall
+                    color: Farben.schriftMatt
+
+                    property bool aufgeklappt: false
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: beschreibung.aufgeklappt = !beschreibung.aufgeklappt
+                    }
+                }
+            }
+
+            Label {
+                x: Theme.horizontalPageMargin
+                width: parent.width - 2 * Theme.horizontalPageMargin
+                visible: seite.podcast.anzahl > 0
+                text: qsTr("%1 Folgen").arg(seite.podcast.anzahl)
+                      + (seite.podcast.rechte ? "  ·  " + seite.podcast.rechte : "")
+                font.pixelSize: Theme.fontSizeTiny
+                color: Farben.kuenftig
+                truncationMode: TruncationMode.Fade
+            }
+
             Spielleiste { width: parent.width }
         }
 
@@ -136,7 +213,10 @@ Page {
     }
 
     BusyIndicator {
-        palette.highlightColor: Farben.rot
+        // Nicht ueber die palette: der Kringel ist ein HighlightImage
+        // im Inneren und nimmt seine Farbe aus dem Theme. Die eigene
+        // Eigenschaft "color" wirkt (nachgemessen).
+        color: Farben.rot
         anchors.centerIn: parent
         size: BusyIndicatorSize.Large
         running: oe1.busy && seite.folgen.length === 0
