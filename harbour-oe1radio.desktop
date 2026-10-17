@@ -12,4 +12,6 @@ OrganizationName=harbour-oe1radio
 ApplicationName=harbour-oe1radio
 # Audio ist Pflicht: ohne die Berechtigung spielt MediaPlayer im Sandkasten
 # *stumm* weiter, ohne Fehler -- genau die Art Stille, die man lange sucht.
-Permissions=Audio;Internet
+# Downloads gibt den Ordner frei, in den der Lader die Aufnahmen legt
+# (~/Downloads/Ö1); ohne sie scheitert schon das Anlegen des Ordners.
+Permissions=Audio;Internet;Downloads

@@ -9,6 +9,8 @@ Page {
     id: seite
     allowedOrientations: Orientation.All
 
+    Rectangle { anchors.fill: parent; color: Farben.grund }
+
     property int tagVersatz: 0
     property var sendungen: []
 
@@ -42,7 +44,10 @@ Page {
             id: spalte
             width: parent.width
 
-            PageHeader { title: qsTr("7 Tage") }
+            PageHeader {
+                title: qsTr("7 Tage")
+                _titleItem.color: Farben.rot
+            }
 
             ComboBox {
                 width: parent.width

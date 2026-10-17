@@ -10,6 +10,8 @@ Page {
     id: seite
     allowedOrientations: Orientation.All
 
+    Rectangle { anchors.fill: parent; color: Farben.grund }
+
     property int podcastId: 0
     property string podcastTitel: ""
     property var folgen: []
@@ -27,7 +29,10 @@ Page {
 
         header: Column {
             width: seite.width
-            PageHeader { title: seite.podcastTitel }
+            PageHeader {
+                title: seite.podcastTitel
+                _titleItem.color: Farben.rot
+            }
             Spielleiste { width: parent.width }
         }
 
@@ -37,13 +42,50 @@ Page {
 
             readonly property bool dieseSpielt:
                 Spieler.hatQuelle && Spieler.titel === modelData.titel
+            // Die Folgenadresse ist die Kennung -- zwei Folgen koennen
+            // gleich heissen, die Adresse ist eindeutig.
+            readonly property string kennung: "folge:" + (modelData.adresse || "")
+            readonly property double anteil: lader.aufnahmen.length >= 0
+                                             ? lader.fortschritt(kennung) : -1
+
+            menu: ContextMenu {
+                MenuItem {
+                    visible: zeile.anteil < 0
+                    text: qsTr("Herunterladen")
+                    onClicked: lader.hole(zeile.kennung, modelData.titel,
+                                          modelData.adresse)
+                }
+                MenuItem {
+                    visible: zeile.anteil >= 0 && zeile.anteil < 1
+                    text: qsTr("Abbruch")
+                    onClicked: lader.abbrechen(zeile.kennung)
+                }
+                MenuItem {
+                    visible: zeile.anteil === 1
+                    text: qsTr("Aufnahme löschen")
+                    onClicked: lader.loeschen(zeile.kennung)
+                }
+                MenuItem {
+                    text: merker.gemerkt(zeile.kennung) ? qsTr("Nicht mehr merken")
+                                                        : qsTr("Als Favorit merken")
+                    onClicked: merker.umschalten(zeile.kennung, {
+                        titel: modelData.titel,
+                        untertitel: modelData.datum || "",
+                        art: "folge",
+                        adresse: modelData.adresse
+                    })
+                }
+            }
 
             onClicked: {
-                if (dieseSpielt)
+                if (dieseSpielt) {
                     Spieler.umschalten()
-                else
-                    Spieler.spieleSendung(0, modelData.titel,
-                                          modelData.datum, modelData.adresse)
+                } else {
+                    // Schon auf dem Geraet? Dann von dort.
+                    var da = lader.dateiAdresse(kennung)
+                    Spieler.spieleSendung(0, modelData.titel, modelData.datum,
+                                          da !== "" ? da : modelData.adresse)
+                }
             }
 
             Column {
@@ -63,8 +105,15 @@ Page {
                 Label {
                     width: parent.width
                     text: modelData.datum
+                          + (zeile.anteil === 1 ? "   ↓" : "")
                     font.pixelSize: Theme.fontSizeExtraSmall
-                    color: Theme.secondaryColor
+                    color: zeile.anteil === 1 ? Farben.rot : Theme.secondaryColor
+                }
+                ProgressBar {
+                    width: parent.width
+                    visible: zeile.anteil >= 0 && zeile.anteil < 1
+                    minimumValue: 0; maximumValue: 1
+                    value: zeile.anteil
                 }
             }
         }

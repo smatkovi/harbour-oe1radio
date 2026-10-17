@@ -1,8 +1,11 @@
 import QtQuick 2.6
 import Sailfish.Silica 1.0
+import "../components"
 
 Page {
     allowedOrientations: Orientation.All
+
+    Rectangle { anchors.fill: parent; color: Farben.grund }
 
     SilicaFlickable {
         anchors.fill: parent
@@ -13,7 +16,10 @@ Page {
             width: parent.width
             spacing: Theme.paddingMedium
 
-            PageHeader { title: qsTr("Über") }
+            PageHeader {
+                title: qsTr("Über")
+                _titleItem.color: Farben.rot
+            }
 
             Label {
                 x: Theme.horizontalPageMargin

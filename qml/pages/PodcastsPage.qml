@@ -6,6 +6,8 @@ Page {
     id: seite
     allowedOrientations: Orientation.All
 
+    Rectangle { anchors.fill: parent; color: Farben.grund }
+
     property var podcasts: []
 
     Component.onCompleted: oe1.ladePodcasts()
@@ -18,7 +20,10 @@ Page {
     SilicaListView {
         anchors.fill: parent
         model: seite.podcasts
-        header: PageHeader { title: qsTr("Podcasts") }
+        header: PageHeader {
+            title: qsTr("Podcasts")
+            _titleItem.color: Farben.rot
+        }
 
         PullDownMenu {
             MenuItem {

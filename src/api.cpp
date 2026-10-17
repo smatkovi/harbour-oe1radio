@@ -10,11 +10,17 @@
 #include <QDateTime>
 #include <QLocale>
 #include <QUrl>
+#include <QHash>
 
 namespace {
 
 const char *API_OE1  = "https://audioapi.orf.at/oe1/api/json/5.0";
 const char *API_RTHK = "https://audioapi.orf.at/radiothek/api/2.0";
+
+// Beitraege und Journale liegen auf einem *anderen* Dienst als das Programm.
+// Steht so in der Android-App (StoryNetworkModule); auf dem Programmdienst
+// antworten dieselben Pfade mit 404.
+const char *API_APP = "https://oe1.orf.at/api/v1/app";
 
 // Der Strom einer vergangenen Sendung. Dieselbe Adresse wie auf Harmattan --
 // nur muss sie hier nicht erst durch einen Vermittler, gstreamer nimmt https.
@@ -90,6 +96,11 @@ QVariantMap Api::sendungAusJson(const QJsonObject &o) const
     m[QStringLiteral("text")]     = o.value(QStringLiteral("description")).toString();
     m[QStringLiteral("dauer")]    = o.value(QStringLiteral("duration")).toInt();
     m[QStringLiteral("abrufbar")] = o.value(QStringLiteral("isOnDemand")).toBool();
+    // Beitraege und Journale verweisen ueber den Programmschluessel, nicht
+    // ueber die id -- ohne ihn liesse sich von dort nichts abspielen.
+    m[QStringLiteral("schluessel")] = o.value(QStringLiteral("programKey")).toString();
+    m[QStringLiteral("tag")]        = QString::number(
+                o.value(QStringLiteral("broadcastDay")).toInt());
 
     // start/end kommen als UTC; die Uhrzeit soll die oertliche sein.
     const QDateTime start = QDateTime::fromString(
@@ -135,7 +146,12 @@ void Api::ladeTag(const QString &datum)
         const QJsonArray nutz = wurzel.value(QStringLiteral("payload")).toArray();
         for (const QJsonValue &v : nutz)
             aus << sendungAusJson(v.toObject());
+        m_tage.insert(datum, aus);
         emit tagGeladen(datum, aus);
+
+        // Laeuft gerade eine Suche, pruefen ob der letzte Tag da ist.
+        if (m_sucheOffen > 0 && --m_sucheOffen == 0)
+            suche(m_suchText);
     });
 }
 
@@ -265,4 +281,182 @@ void Api::ladeFolgen(int podcastId)
             emit folgenGeladen(aus);
         });
     });
+}
+
+void Api::ladeBeitraege(int seite)
+{
+    QNetworkReply *a = hole(QStringLiteral("%1/article?page=%2").arg(API_APP).arg(seite));
+    connect(a, &QNetworkReply::finished, this, [this, a]() {
+        a->deleteLater();
+        fertig();
+        if (a->error() != QNetworkReply::NoError) {
+            emit fehler(a->errorString());
+            return;
+        }
+        const QJsonObject wurzel = QJsonDocument::fromJson(a->readAll()).object();
+        QVariantList aus;
+        for (const QJsonValue &v : wurzel.value(QStringLiteral("stories")).toArray()) {
+            const QJsonObject b = v.toObject();
+            QVariantMap m;
+            // Die id ist hier der Programmschluessel, nicht die Sendungsnummer.
+            m[QStringLiteral("schluessel")] = b.value(QStringLiteral("id")).toString();
+            m[QStringLiteral("titel")]      = b.value(QStringLiteral("title")).toString();
+            m[QStringLiteral("untertitel")] = b.value(QStringLiteral("subTitle")).toString();
+            m[QStringLiteral("stichwort")]  = b.value(QStringLiteral("keyword")).toString();
+            m[QStringLiteral("text")]       = b.value(QStringLiteral("teaser")).toString();
+            m[QStringLiteral("art")]        = b.value(QStringLiteral("type")).toString();
+            m[QStringLiteral("seite")]      = b.value(QStringLiteral("originalUrl")).toString();
+            m[QStringLiteral("bild")]       = b.value(QStringLiteral("titleImage"))
+                    .toObject().value(QStringLiteral("src")).toString();
+            // Aus der Programmadresse laesst sich der Tag ablesen:
+            // .../programm/20261017/846257/...
+            const QString u = m[QStringLiteral("seite")].toString();
+            const int i = u.indexOf(QStringLiteral("/programm/"));
+            if (i >= 0)
+                m[QStringLiteral("tag")] = u.mid(i + 10, 8);
+            aus << m;
+        }
+        emit beitraegeGeladen(aus);
+    });
+}
+
+void Api::ladeJournale()
+{
+    QNetworkReply *a = hole(QStringLiteral("%1/journale?page=0").arg(API_APP));
+    connect(a, &QNetworkReply::finished, this, [this, a]() {
+        a->deleteLater();
+        fertig();
+        if (a->error() != QNetworkReply::NoError) {
+            emit fehler(a->errorString());
+            return;
+        }
+        const QJsonObject wurzel = QJsonDocument::fromJson(a->readAll()).object();
+        QVariantList tage;
+        for (const QJsonValue &dv : wurzel.value(QStringLiteral("journalDays")).toArray()) {
+            const QJsonObject d = dv.toObject();
+            QVariantMap tag;
+            const QDateTime t = QDateTime::fromString(
+                        d.value(QStringLiteral("day")).toString(), Qt::ISODate);
+            tag[QStringLiteral("tag")] = t.isValid()
+                    ? t.toString(QStringLiteral("yyyyMMdd")) : QString();
+            tag[QStringLiteral("name")] = t.isValid()
+                    ? QLocale::system().toString(t.date(), QStringLiteral("dddd, d. MMMM"))
+                    : QString();
+
+            QVariantList journale;
+            for (const QJsonValue &jv : d.value(QStringLiteral("journals")).toArray()) {
+                const QJsonObject j = jv.toObject();
+                QVariantMap journal;
+                journal[QStringLiteral("titel")] = j.value(QStringLiteral("title")).toString();
+                const QDateTime sendezeit = QDateTime::fromString(
+                            j.value(QStringLiteral("airdate")).toString(), Qt::ISODate);
+                journal[QStringLiteral("zeit")] = sendezeit.isValid()
+                        ? sendezeit.toLocalTime().toString(QStringLiteral("HH:mm")) : QString();
+
+                QVariantList stuecke;
+                for (const QJsonValue &ev : j.value(QStringLiteral("elements")).toArray()) {
+                    const QJsonObject e = ev.toObject();
+                    QVariantMap stueck;
+                    stueck[QStringLiteral("zeit")]  = e.value(QStringLiteral("time")).toString();
+                    stueck[QStringLiteral("titel")] = e.value(QStringLiteral("title")).toString();
+                    // Die Adresse hat die Form
+                    // .../player/<tag>/<schluessel>/<beginn in ms>
+                    const QString u = e.value(QStringLiteral("url")).toString();
+                    const QStringList teile = u.split(QLatin1Char('/'), QString::SkipEmptyParts);
+                    if (teile.size() >= 3) {
+                        stueck[QStringLiteral("tag")]        = teile.at(teile.size() - 3);
+                        stueck[QStringLiteral("schluessel")] = teile.at(teile.size() - 2);
+                        stueck[QStringLiteral("beginn")]     = teile.last().toLongLong();
+                    }
+                    stuecke << stueck;
+                }
+                journal[QStringLiteral("stuecke")] = stuecke;
+                journale << journal;
+            }
+            tag[QStringLiteral("journale")] = journale;
+            tage << tag;
+        }
+        emit journaleGeladen(tage);
+    });
+}
+
+void Api::ladeSendungNachSchluessel(const QString &datum, const QString &programKey,
+                                    int versatzMs)
+{
+    // Der Tag ist vielleicht schon geladen -- dann ohne Netz auskommen.
+    if (m_tage.contains(datum)) {
+        for (const QVariant &v : m_tage.value(datum)) {
+            const QVariantMap s = v.toMap();
+            if (s.value(QStringLiteral("schluessel")).toString() == programKey) {
+                ladeSendung(s.value(QStringLiteral("id")).toInt());
+                return;
+            }
+        }
+    }
+
+    QNetworkReply *a = hole(QStringLiteral("%1/broadcasts/%2").arg(API_OE1, datum));
+    connect(a, &QNetworkReply::finished, this, [this, a, datum, programKey, versatzMs]() {
+        a->deleteLater();
+        fertig();
+        if (a->error() != QNetworkReply::NoError) {
+            emit fehler(a->errorString());
+            return;
+        }
+        const QJsonArray nutz = QJsonDocument::fromJson(a->readAll())
+                .object().value(QStringLiteral("payload")).toArray();
+        QVariantList tag;
+        int treffer = -1;
+        for (const QJsonValue &v : nutz) {
+            const QVariantMap s = sendungAusJson(v.toObject());
+            tag << s;
+            if (s.value(QStringLiteral("schluessel")).toString() == programKey)
+                treffer = s.value(QStringLiteral("id")).toInt();
+        }
+        m_tage.insert(datum, tag);
+        if (treffer > 0) {
+            Q_UNUSED(versatzMs)
+            ladeSendung(treffer);
+        } else {
+            emit fehler(tr("Diese Sendung steht nicht mehr zum Nachhören bereit."));
+        }
+    });
+}
+
+void Api::suche(const QString &text)
+{
+    const QString gesucht = text.trimmed();
+    if (gesucht.length() < 2) {
+        emit sucheFertig(gesucht, {});
+        return;
+    }
+
+    // Die Schnittstelle kennt keine Suche. Also die sieben vorgehaltenen Tage
+    // holen (die meisten liegen ohnehin schon da) und oertlich filtern --
+    // dasselbe Vorgehen wie in der MeeGo-Fassung.
+    m_suchText = gesucht;
+    int fehlen = 0;
+    for (int i = 0; i < 7; ++i) {
+        const QString d = tagVor(i);
+        if (!m_tage.contains(d)) {
+            fehlen++;
+            ladeTag(d);
+        }
+    }
+    if (fehlen > 0) {
+        m_sucheOffen = fehlen;
+        return;         // ladeTag() ruft suche() erneut, sobald alle da sind
+    }
+
+    QVariantList treffer;
+    for (int i = 0; i < 7; ++i) {
+        for (const QVariant &v : m_tage.value(tagVor(i))) {
+            const QVariantMap s = v.toMap();
+            if (s.value(QStringLiteral("titel")).toString().contains(gesucht, Qt::CaseInsensitive)
+                || s.value(QStringLiteral("untertitel")).toString().contains(gesucht, Qt::CaseInsensitive)
+                || s.value(QStringLiteral("text")).toString().contains(gesucht, Qt::CaseInsensitive)) {
+                treffer << s;
+            }
+        }
+    }
+    emit sucheFertig(gesucht, treffer);
 }

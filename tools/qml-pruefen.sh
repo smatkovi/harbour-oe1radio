@@ -16,7 +16,9 @@ cd "$(dirname "$0")/.."
 FEHLER=0
 MUSTER="is not a type|Expected token|Unexpected token|Syntax error|Cannot assign|is not installed|No such file|has no qmldir|ReferenceError"
 # Erwartbar, wenn eine Seite ohne die App geladen wird:
-RAUSCHEN="__silica_applicationwindow_instance|ReferenceError: oe1 |ReferenceError: appVersion |Cannot assign to non-existent property \"onTagGeladen\"|Cannot assign to non-existent property \"onSendungGeladen\"|Cannot assign to non-existent property \"onPodcastsGeladen\"|Cannot assign to non-existent property \"onFolgenGeladen\""
+# Die Kontext-Eigenschaften (oe1, lader, merker) und die Signale darauf gibt
+# es nur in der laufenden App; einzeln geladen fehlen sie zwangslaeufig.
+RAUSCHEN="__silica_applicationwindow_instance|ReferenceError: (oe1|lader|merker|appVersion) |Cannot assign to non-existent property \"on(TagGeladen|SendungGeladen|PodcastsGeladen|FolgenGeladen|BeitraegeGeladen|JournaleGeladen|SucheFertig|AufnahmenChanged|EintraegeChanged)\""
 
 for f in qml/harbour-oe1radio.qml qml/cover/*.qml qml/pages/*.qml; do
     [ -f "$f" ] || continue

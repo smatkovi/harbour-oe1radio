@@ -6,7 +6,9 @@ import "."
 
 /*!
  * Eine Sendung im Tagesprogramm. Antippen holt die Abspieladresse -- die
- * steht nicht im Tagesprogramm, sondern erst in der Einzelabfrage.
+ * steht nicht im Tagesprogramm, sondern erst in der Einzelabfrage. Was dann
+ * damit geschieht, haengt davon ab, was angetippt wurde: Abspielen, Info
+ * oder Herunterladen.
  */
 ListItem {
     id: zeile
@@ -14,7 +16,14 @@ ListItem {
     property var sendung
     readonly property bool abrufbar: sendung && sendung.abrufbar
     readonly property bool laeuft: sendung && sendung.laeuftJetzt
-    readonly property bool dieseSpielt: sendung && Spieler.sendungId === sendung.id
+    readonly property bool dieseSpielt: sendung && sendung.id
+                                        && Spieler.sendungId === sendung.id
+    readonly property string kennung: "sendung:" + (sendung ? sendung.id : 0)
+    readonly property double anteil: lader.aufnahmen.length >= 0
+                                     ? lader.fortschritt(kennung) : -1
+
+    // Was nach dem Laden geschehen soll: "spielen", "info" oder "laden".
+    property string absicht: ""
 
     contentHeight: inhalt.height + Theme.paddingMedium
     enabled: abrufbar || laeuft
@@ -22,24 +31,76 @@ ListItem {
     Connections {
         target: oe1
         onSendungGeladen: {
-            if (!zeile.sendung || sendung.id !== zeile.sendung.id)
+            if (!zeile.sendung || zeile.absicht === ""
+                    || sendung.id !== zeile.sendung.id)
                 return
-            if (sendung.adresse)
-                Spieler.spieleSendung(sendung.id, sendung.titel,
-                                      sendung.zeit, sendung.adresse)
-            else
-                Spieler.fehler = qsTr("Diese Sendung ist nicht zum Nachhören da.")
+            var was = zeile.absicht
+            zeile.absicht = ""
+            if (was === "info") {
+                pageStack.push(Qt.resolvedUrl("../pages/InfoPage.qml"),
+                               { sendung: sendung })
+            } else if (was === "laden") {
+                if (sendung.adresse)
+                    lader.hole(zeile.kennung, sendung.titel, sendung.adresse)
+                else
+                    Spieler.fehler = qsTr("Diese Sendung ist nicht zum Nachhören da.")
+            } else {
+                if (sendung.adresse) {
+                    // Liegt sie schon auf dem Geraet, von dort.
+                    var da = lader.dateiAdresse(zeile.kennung)
+                    Spieler.spieleSendung(sendung.id, sendung.titel, sendung.zeit,
+                                          da !== "" ? da : sendung.adresse)
+                } else {
+                    Spieler.fehler = qsTr("Diese Sendung ist nicht zum Nachhören da.")
+                }
+            }
+        }
+    }
+
+    function anstossen(was) {
+        zeile.absicht = was
+        oe1.ladeSendung(sendung.id)
+    }
+
+    menu: ContextMenu {
+        MenuItem {
+            text: qsTr("Info")
+            onClicked: zeile.anstossen("info")
+        }
+        MenuItem {
+            visible: zeile.abrufbar && zeile.anteil < 0
+            text: qsTr("Herunterladen")
+            onClicked: zeile.anstossen("laden")
+        }
+        MenuItem {
+            visible: zeile.anteil >= 0 && zeile.anteil < 1
+            text: qsTr("Abbruch")
+            onClicked: lader.abbrechen(zeile.kennung)
+        }
+        MenuItem {
+            visible: zeile.anteil === 1
+            text: qsTr("Aufnahme löschen")
+            onClicked: lader.loeschen(zeile.kennung)
+        }
+        MenuItem {
+            text: merker.gemerkt(zeile.kennung) ? qsTr("Nicht mehr merken")
+                                                : qsTr("Als Favorit merken")
+            onClicked: merker.umschalten(zeile.kennung, {
+                titel: zeile.sendung.titel,
+                untertitel: zeile.sendung.zeit || "",
+                art: "sendung",
+                id: zeile.sendung.id
+            })
         }
     }
 
     onClicked: {
-        if (dieseSpielt) {
+        if (dieseSpielt)
             Spieler.umschalten()
-        } else if (abrufbar) {
-            oe1.ladeSendung(sendung.id)
-        } else if (laeuft) {
+        else if (abrufbar)
+            anstossen("spielen")
+        else if (laeuft)
             Spieler.spieleLive()
-        }
     }
 
     Row {
@@ -57,7 +118,8 @@ ListItem {
             width: Theme.itemSizeExtraSmall
             text: sendung ? sendung.zeit : ""
             font.pixelSize: Theme.fontSizeSmall
-            color: zeile.laeuft ? Theme.highlightColor : Theme.secondaryColor
+            color: zeile.laeuft ? Farben.rot
+                 : zeile.enabled ? Theme.secondaryColor : Farben.kuenftig
         }
 
         Column {
@@ -66,9 +128,11 @@ ListItem {
             Label {
                 width: parent.width
                 text: sendung ? sendung.titel : ""
-                truncationMode: TruncationMode.Fade
-                color: zeile.dieseSpielt ? Theme.highlightColor
-                     : zeile.enabled ? Theme.primaryColor : Theme.secondaryColor
+                wrapMode: Text.Wrap
+                maximumLineCount: 2
+                elide: Text.ElideRight
+                color: zeile.dieseSpielt ? Farben.rot
+                     : zeile.enabled ? Theme.primaryColor : Farben.kuenftig
             }
             Label {
                 width: parent.width
@@ -84,9 +148,10 @@ ListItem {
             id: marke
             anchors.verticalCenter: parent.verticalCenter
             text: zeile.dieseSpielt && Spieler.spielt ? "▮▮"
-                : zeile.laeuft ? qsTr("live") : ""
+                : zeile.laeuft ? qsTr("live")
+                : zeile.anteil === 1 ? "↓" : ""
             font.pixelSize: Theme.fontSizeExtraSmall
-            color: Theme.highlightColor
+            color: Farben.rot
         }
     }
 }

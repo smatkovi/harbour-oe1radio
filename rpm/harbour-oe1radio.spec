@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.1.0
+Version:    0.2.0
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -54,6 +54,18 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.2.0-1
+- Nach dem Vorbild der Android-App "Radio Ö1" 5.8.8: Highlights, Journale,
+  Favoriten, Suche und "Info" zur Sendung. Deren fuenf Reiter gibt es auf
+  Sailfish nicht -- sie haengen im Pulley-Menü und auf der Seite "Mehr".
+- Herunterladen von Sendungen und Podcastfolgen nach ~/Downloads/Ö1; was
+  auf dem Geraet liegt, wird von dort gespielt. Das kann die Android-App
+  nicht.
+- Farben aus deren colors.xml: Ö1-Rot #b61f24 als einziger Akzent, Grund
+  schwarz bzw. weiss je nach Ambience, alles Uebrige aus dem Theme.
+- Sprung 15 Minuten statt 10 Sekunden, wie dort.
+- Laufende Titel brechen um statt abzuschneiden.
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.1.0-1
 - Erste Fassung: Livestream in drei Rohrweiten, 7 Tage zum Nachhoeren mit
   Spulen, Podcasts samt Folgen, Einschlafzeit, Cover und Sperrbildschirm.

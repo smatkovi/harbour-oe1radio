@@ -1,1 +1,2 @@
 singleton Spieler 1.0 Spieler.qml
+singleton Farben 1.0 Farben.qml

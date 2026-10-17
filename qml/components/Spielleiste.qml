@@ -4,6 +4,7 @@ import Sailfish.Silica 1.0
 // von selbst sichtbar, der Ordner muss eigens eingebunden werden.
 import "."
 
+
 /*!
  * Die Steuerung dessen, was gerade laeuft: Titel, Fortschritt, Spulen,
  * Einschlafzeit. Steht auf jeder Seite, die sie braucht, und liest alles
@@ -33,11 +34,16 @@ Column {
                 rightMargin: Theme.horizontalPageMargin
             }
 
+            // Umbrechen statt abschneiden: Sendungstitel wie
+            // "Ö1 Kulturjournal: Die Diagonale in Graz" gehen sich in einer
+            // Zeile nicht aus, und ein ausgeblendetes Ende sagt nichts.
             Label {
                 width: parent.width
                 text: Spieler.titel
                 color: Theme.highlightColor
-                truncationMode: TruncationMode.Fade
+                wrapMode: Text.Wrap
+                maximumLineCount: 2
+                elide: Text.ElideRight
             }
             Label {
                 width: parent.width
@@ -45,7 +51,9 @@ Column {
                 text: Spieler.untertitel
                 font.pixelSize: Theme.fontSizeExtraSmall
                 color: Theme.secondaryColor
-                truncationMode: TruncationMode.Fade
+                wrapMode: Text.Wrap
+                maximumLineCount: 2
+                elide: Text.ElideRight
             }
         }
     }
@@ -77,23 +85,28 @@ Column {
         anchors.horizontalCenter: parent.horizontalCenter
         spacing: Theme.paddingLarge
 
-        // Die Sprungweite richtet sich nach dem Symbol: Silica hat nur ein
-        // Zehn-Sekunden-Paar (icon-m-backward gibt es gar nicht), und ein
-        // Symbol, auf dem "10s" steht, soll nicht 30 s springen.
+        // Die Android-App springt 15 Minuten ("15 Minuten zurueck springen"
+        // steht so in ihren Zeichenketten), also hier auch. Silica hat dafuer
+        // kein Symbol -- das Zehn-Sekunden-Paar waere gelogen, deshalb die
+        // schlichten Pfeile mit der Weite als Beschriftung daneben.
         IconButton {
-            icon.source: "image://theme/icon-m-10s-back"
+            icon.source: "image://theme/icon-m-previous"
             visible: Spieler.spulbar
-            onClicked: Spieler.spulen(-10000)
+            onClicked: Spieler.spulen(-15 * 60000)
         }
         IconButton {
             icon.source: Spieler.spielt ? "image://theme/icon-l-pause"
                                         : "image://theme/icon-l-play"
+            // Der einzige Ort, an dem die Android-App ihr Rot auf ein
+            // Bedienelement legt.
+            icon.highlightColor: Farben.rot
+            highlighted: true
             onClicked: Spieler.umschalten()
         }
         IconButton {
-            icon.source: "image://theme/icon-m-10s-forward"
+            icon.source: "image://theme/icon-m-next"
             visible: Spieler.spulbar
-            onClicked: Spieler.spulen(10000)
+            onClicked: Spieler.spulen(15 * 60000)
         }
         IconButton {
             icon.source: "image://theme/icon-m-clear"

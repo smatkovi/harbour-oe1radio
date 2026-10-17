@@ -13,6 +13,11 @@ This is the Sailfish side of
 for MeeGo Harmattan on the Nokia N9 and N950. The two share the ORF endpoints
 and nothing else — and the reason is worth writing down.
 
+Since 0.2.0 the feature set follows the official Android app **Radio Ö1
+5.8.8**: live, 7 Tage, Highlights, Journale, Favoriten, Suche and the "Info"
+page of a broadcast. Downloading is the one thing here that the Android app
+cannot do.
+
 ## What the port could throw away
 
 The Harmattan version is built around two platform defects, and almost all of
@@ -105,11 +110,54 @@ behind and the second package then ships the first one's binary — the RPM
 header still claims the right architecture, so the script runs `file` on the
 unpacked binary and prints what is actually inside.
 
-## Not in 0.1.0
+## Following the Android app
 
-Downloading broadcasts for offline listening, and the search over the
-programme. Both exist in the Harmattan version; neither is hard here, they
-were simply left for a later round.
+The official app was the reference for 0.2.0. Its APK decodes with `apktool`
+(the run ends in an OutOfMemoryError, but `res` is finished by then), and two
+files in it settle most design questions:
+
+- `res/menu/bottom_nav_menu.xml` — **five tabs**: Player, 7 Tage, Stories,
+  Journale, Favoriten; `res/navigation/mobile_navigation.xml` adds Info,
+  Suche, Podcasts and the sleep timer under "Mehr". Silica has no bottom
+  tabs, so the player is the main page and the rest hangs in its pulley menu
+  and on a "Mehr" page.
+- `res/values/colors.xml` — `oe1_red` **#b61f24**. That is taken as the only
+  accent; everything else comes from the ambience, so the app still looks
+  like the device it runs on. The ground is `#000000` on a dark ambience and
+  `#ffffff` on a light one.
+
+Its strings settle a detail that would otherwise have been guesswork: the
+skip button is **15 minutes** (`backward_label`), not the ten seconds Silica's
+icon set suggests.
+
+**The endpoints are not guessable, and two services are involved.** The
+programme comes from `audioapi.orf.at`, but Highlights and Journale come from
+`oe1.orf.at/api/v1/app/` — `article`, `article-info/{id}` and `journale`. The
+paths live in Retrofit *annotations*, not in plain string constants, so
+`strings | grep` finds nothing; `baksmali` and
+`grep -A4 'Lretrofit2/http/GET;'` find them, and the base URL sits in
+`at/orf/oe1/di/StoryNetworkModuleKt`. The stream URLs likewise come from the
+app's own config at `appmeta.orf.at/configs/oe1/android/config.json` rather
+than from guessing.
+
+Two joins are needed because the feeds speak a different language than the
+programme API: Highlights and Journale identify a broadcast by its
+**programKey**, not by the id the audio API wants, so `ladeSendungNachSchluessel()`
+fetches that day's schedule and matches. Search is local across the seven days
+the API holds — the service has no search of its own.
+
+## Downloading
+
+Sendungen and podcast episodes can be put on the device
+(`~/Downloads/Ö1`, which is what the Sailjail `Downloads` permission opens).
+Anything already downloaded is played from disk instead of the network.
+A download in flight is a `QSaveFile`, so an abort or a crash leaves no
+half file that later looks like a finished recording.
+
+## Not yet
+
+The alarm clock (an Ö3 feature in the shared codebase), push topics, traffic
+and sharing.
 
 ## License
 
