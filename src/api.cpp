@@ -138,16 +138,38 @@ QVariantMap Api::sendungAusJson(const QJsonObject &o) const
     m[QStringLiteral("laeuftJetzt")] = start.isValid() && ende.isValid()
             && start <= jetzt && jetzt < ende;
 
-    // Das erste Bild reicht; die Schnittstelle legt mehrere Groessen ab.
-    QString bild;
+    // Bilder: anders als bei den Podcasts ist "versions" hier eine *Liste*,
+    // nach Breite absteigend (header_retina 1750, square 984, header 875).
+    // Fuer eine Zeile taugt das quadratische, fuer die Infoseite das breite.
+    QString quadrat, breit;
     const QJsonArray bilder = o.value(QStringLiteral("images")).toArray();
     if (!bilder.isEmpty()) {
         const QJsonArray fassungen = bilder.first().toObject()
                 .value(QStringLiteral("versions")).toArray();
-        if (!fassungen.isEmpty())
-            bild = fassungen.last().toObject().value(QStringLiteral("path")).toString();
+        int breiteste = -1;
+        for (const QJsonValue &v : fassungen) {
+            const QJsonObject f = v.toObject();
+            const QString pfad = f.value(QStringLiteral("path")).toString();
+            if (pfad.isEmpty())
+                continue;
+            // Die Art steht nur im Pfad -- eine Hoehe liefert die
+            // Schnittstelle nicht mit, also laesst sie sich nicht rechnen.
+            if (pfad.contains(QLatin1String("/square/")))
+                quadrat = pfad;
+            const int w = f.value(QStringLiteral("width")).toInt();
+            if (w > breiteste) {
+                breiteste = w;
+                breit = pfad;
+            }
+        }
+        // Kein quadratisches dabei: das schmalste nehmen, es ist am
+        // kleinsten zu laden.
+        if (quadrat.isEmpty() && !fassungen.isEmpty())
+            quadrat = fassungen.last().toObject()
+                    .value(QStringLiteral("path")).toString();
     }
-    m[QStringLiteral("bild")] = bild;
+    m[QStringLiteral("bild")]      = quadrat;
+    m[QStringLiteral("bildBreit")] = breit.isEmpty() ? quadrat : breit;
     return m;
 }
 

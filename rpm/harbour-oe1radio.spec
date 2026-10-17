@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.6.0
+Version:    0.6.1
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -57,6 +57,17 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.6.1-1
+- Bilder bei den Sendungen: im Tagesprogramm als quadratisches Vorschaubild
+  in der Zeile, auf der Infoseite das breite Kopfbild. Bei den Sendungen ist
+  "versions" uebrigens eine *Liste* (nach Breite absteigend), bei den
+  Podcasts ein Objekt -- dieselbe Schnittstelle, zwei Formen.
+- Die Podcastliste zeigt jetzt Bild und Beschreibung, nicht nur Titel und
+  Zahl der Folgen.
+- Jede Folge zeigt ihre Beschreibung (im Kontextmenü aufklappbar) und
+  waehrend eines Abrufs den Anteil in Prozent. Die Beschreibung stand
+  laengst im RSS und wurde eingelesen, aber nie angezeigt.
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.6.0-1
 - Angaben zum Podcast: Bild, Autor, Beschreibung (antippen klappt sie auf),
   Zahl der Folgen und Rechte. Die Daten kamen beim Laden der Folgen ohnehin

@@ -34,14 +34,15 @@ Page {
         delegate: ListItem {
             // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
             palette.highlightBackgroundColor: Farben.band
-            contentHeight: zeilen.height + Theme.paddingMedium
+            contentHeight: Math.max(zeilen.height, Theme.itemSizeSmall)
+                           + Theme.paddingMedium
 
             onClicked: pageStack.push(Qt.resolvedUrl("PodcastPage.qml"), {
                 podcastId: modelData.id,
                 podcastTitel: modelData.titel
             })
 
-            Column {
+            Row {
                 id: zeilen
                 anchors {
                     left: parent.left; right: parent.right
@@ -49,16 +50,46 @@ Page {
                     rightMargin: Theme.horizontalPageMargin
                     verticalCenter: parent.verticalCenter
                 }
-                Label {
-                    width: parent.width
-                    text: modelData.titel
-                    truncationMode: TruncationMode.Fade
+                spacing: Theme.paddingMedium
+
+                Image {
+                    id: bild
+                    width: Theme.itemSizeSmall
+                    height: width
+                    fillMode: Image.PreserveAspectCrop
+                    clip: true
+                    asynchronous: true
+                    source: modelData.bild || ""
+                    visible: source != "" && status === Image.Ready
                 }
-                Label {
+
+                Column {
                     width: parent.width
-                    text: qsTr("%1 Folgen").arg(modelData.anzahl)
-                    font.pixelSize: Theme.fontSizeExtraSmall
-                    color: Farben.schriftMatt
+                           - (bild.visible ? bild.width + Theme.paddingMedium : 0)
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Label {
+                        width: parent.width
+                        text: modelData.titel
+                        truncationMode: TruncationMode.Fade
+                        color: Farben.schrift
+                    }
+                    Label {
+                        width: parent.width
+                        visible: text !== ""
+                        text: modelData.text || ""
+                        wrapMode: Text.Wrap
+                        maximumLineCount: 2
+                        elide: Text.ElideRight
+                        font.pixelSize: Theme.fontSizeExtraSmall
+                        color: Farben.schriftMatt
+                    }
+                    Label {
+                        width: parent.width
+                        text: qsTr("%1 Folgen").arg(modelData.anzahl)
+                        font.pixelSize: Theme.fontSizeTiny
+                        color: Farben.kuenftig
+                    }
                 }
             }
         }

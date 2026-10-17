@@ -64,7 +64,8 @@ Page {
                 width: parent.width
                 fillMode: Image.PreserveAspectFit
                 visible: source != "" && status === Image.Ready
-                source: seite.sendung.bild || ""
+                // Auf der Seite das breite Kopfbild, nicht das quadratische.
+                source: seite.sendung.bildBreit || seite.sendung.bild || ""
                 asynchronous: true
             }
 

@@ -118,6 +118,7 @@ Page {
             id: zeile
             contentHeight: zeilen.height + Theme.paddingMedium
 
+            property bool aufgeklappt: false
             readonly property bool dieseSpielt:
                 Spieler.hatQuelle && Spieler.titel === modelData.titel
             // Die Folgenadresse ist die Kennung -- zwei Folgen koennen
@@ -185,9 +186,25 @@ Page {
                 Label {
                     width: parent.width
                     text: modelData.datum
-                          + (zeile.anteil === 1 ? "   ↓" : "")
+                          + (zeile.anteil >= 0 && zeile.anteil < 1
+                                ? "   " + Math.round(zeile.anteil * 100) + " %"
+                             : zeile.anteil === 1 ? "   ↓" : "")
                     font.pixelSize: Theme.fontSizeExtraSmall
-                    color: zeile.anteil === 1 ? Farben.rot : Farben.schriftMatt
+                    color: zeile.anteil >= 0 ? Farben.rot : Farben.schriftMatt
+                }
+
+                // Die Beschreibung der Folge steht im RSS und wurde bisher
+                // zwar eingelesen, aber nie gezeigt. Antippen klappt sie auf.
+                Label {
+                    width: parent.width
+                    visible: text !== ""
+                    text: modelData.text || ""
+                    textFormat: Text.StyledText
+                    wrapMode: Text.Wrap
+                    maximumLineCount: zeile.aufgeklappt ? 99 : 2
+                    elide: Text.ElideRight
+                    font.pixelSize: Theme.fontSizeTiny
+                    color: Farben.schriftMatt
                 }
                 ProgressBar {
                     palette.primaryColor: Farben.schrift

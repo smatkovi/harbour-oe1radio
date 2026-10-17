@@ -28,7 +28,8 @@ ListItem {
     // Was nach dem Laden geschehen soll: "spielen", "info" oder "laden".
     property string absicht: ""
 
-    contentHeight: inhalt.height + Theme.paddingMedium
+    contentHeight: Math.max(inhalt.height, Theme.itemSizeExtraSmall)
+                   + Theme.paddingMedium
     enabled: abrufbar || laeuft
 
     Connections {
@@ -131,14 +132,33 @@ ListItem {
         Label {
             id: uhrzeit
             width: Theme.itemSizeExtraSmall
+            anchors.verticalCenter: parent.verticalCenter
             text: sendung ? sendung.zeit : ""
             font.pixelSize: Theme.fontSizeSmall
             color: zeile.laeuft ? Farben.rot
                  : zeile.enabled ? Farben.schriftMatt : Farben.kuenftig
         }
 
+        // Das quadratische Bild der Sendung. Nicht jede hat eines, dann
+        // rueckt der Text einfach auf.
+        Image {
+            id: bild
+            width: Theme.itemSizeExtraSmall
+            height: width
+            anchors.verticalCenter: parent.verticalCenter
+            fillMode: Image.PreserveAspectCrop
+            clip: true
+            asynchronous: true
+            source: sendung && sendung.bild ? sendung.bild : ""
+            visible: source != "" && status === Image.Ready
+            opacity: zeile.enabled ? 1.0 : 0.4
+        }
+
         Column {
-            width: parent.width - uhrzeit.width - marke.width - 2 * Theme.paddingMedium
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width - uhrzeit.width - marke.width
+                   - (bild.visible ? bild.width + Theme.paddingMedium : 0)
+                   - 2 * Theme.paddingMedium
 
             Label {
                 width: parent.width
