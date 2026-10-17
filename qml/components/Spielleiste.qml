@@ -108,14 +108,19 @@ Column {
     }
 
     // --- Einschlafzeit ----------------------------------------------------
+    // Die drei Knoepfe muessen sich die Zeile *teilen*: ein Row mit
+    // Vorgabebreite laeuft bei drei Silica-Buttons rechts und links aus
+    // dem Schirm. Also die Breite ausrechnen und jedem ein Drittel geben.
     Row {
-        anchors.horizontalCenter: parent.horizontalCenter
-        spacing: Theme.paddingMedium
+        x: Theme.horizontalPageMargin
+        width: parent.width - 2 * Theme.horizontalPageMargin
+        spacing: Theme.paddingSmall
         visible: !Spieler.schlaeft
 
         Repeater {
             model: [15, 30, 60]
             delegate: Button {
+                width: (parent.width - 2 * Theme.paddingSmall) / 3
                 text: qsTr("%1 min").arg(modelData)
                 onClicked: Spieler.schlafStarten(modelData)
             }
@@ -123,9 +128,10 @@ Column {
     }
 
     Button {
-        anchors.horizontalCenter: parent.horizontalCenter
+        x: Theme.horizontalPageMargin
+        width: parent.width - 2 * Theme.horizontalPageMargin
         visible: Spieler.schlaeft
-        text: qsTr("Schlaf in %1:%2 — abbrechen")
+        text: qsTr("Schlaf %1:%2 — abbrechen")
                 .arg(Math.floor(Spieler.schlafRest / 60))
                 .arg(("0" + (Spieler.schlafRest % 60)).slice(-2))
         onClicked: Spieler.schlafAbbrechen()

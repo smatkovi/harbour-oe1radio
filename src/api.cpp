@@ -68,14 +68,17 @@ QString Api::tagName(int tage) const
 
 QString Api::liveAdresse(const QString &guete) const
 {
-    // Die beiden Shoutcast-Stroeme laufen unverschluesselt, der HLS-Strom ist
-    // die beste Guete. Auf Harmattan war HLS unbrauchbar; hier spielt
-    // gstreamer ihn mit hlsdemux ohne Zutun.
+    // Die Adressen stehen so in der Einstellungsdatei der ORF-App selbst
+    // (appmeta.orf.at/configs/oe1/android/config.json): HLS als beste Guete,
+    // Shoutcast auf orf-live.ors-shoutcast.at. Der aeltere Name ors-sn10
+    // antwortet zwar noch, ist aber nicht mehr der genannte.
+    // Auf Harmattan war HLS unbrauchbar; hier spielt gstreamer ihn mit
+    // hlsdemux ohne Zutun.
     if (guete == QLatin1String("hoch"))
         return QStringLiteral("https://orf-live-oe1.mdn.ors.at/out/u/oe1/qxa/manifest.m3u8");
     if (guete == QLatin1String("mittel"))
-        return QStringLiteral("http://ors-sn10.ors-shoutcast.at/oe1-q2a");
-    return QStringLiteral("http://ors-sn10.ors-shoutcast.at/oe1-q1a");
+        return QStringLiteral("https://orf-live.ors-shoutcast.at/oe1-q2a");
+    return QStringLiteral("https://orf-live.ors-shoutcast.at/oe1-q1a");
 }
 
 QVariantMap Api::sendungAusJson(const QJsonObject &o) const
