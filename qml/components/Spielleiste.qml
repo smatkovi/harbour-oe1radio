@@ -77,10 +77,13 @@ Column {
         anchors.horizontalCenter: parent.horizontalCenter
         spacing: Theme.paddingLarge
 
+        // Die Sprungweite richtet sich nach dem Symbol: Silica hat nur ein
+        // Zehn-Sekunden-Paar (icon-m-backward gibt es gar nicht), und ein
+        // Symbol, auf dem "10s" steht, soll nicht 30 s springen.
         IconButton {
-            icon.source: "image://theme/icon-m-backward"
+            icon.source: "image://theme/icon-m-10s-back"
             visible: Spieler.spulbar
-            onClicked: Spieler.spulen(-30000)
+            onClicked: Spieler.spulen(-10000)
         }
         IconButton {
             icon.source: Spieler.spielt ? "image://theme/icon-l-pause"
@@ -88,9 +91,9 @@ Column {
             onClicked: Spieler.umschalten()
         }
         IconButton {
-            icon.source: "image://theme/icon-m-forward"
+            icon.source: "image://theme/icon-m-10s-forward"
             visible: Spieler.spulbar
-            onClicked: Spieler.spulen(30000)
+            onClicked: Spieler.spulen(10000)
         }
         IconButton {
             icon.source: "image://theme/icon-m-clear"

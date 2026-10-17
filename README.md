@@ -57,7 +57,7 @@ them. `radiothek/api/2.0/podcast/<id>` only names `urls.feed`, and the episodes
 live in that RSS document — so `ladeFolgen()` makes two requests and parses the
 feed with `QXmlStreamReader`, taking the `<enclosure url=…>` of each item.
 
-## Two things that would have cost an evening each
+## Three things that would have cost an evening each
 
 **`Audio` in the Sailjail permissions.** Without it `MediaPlayer` plays
 *silently* inside the sandbox — no error, no warning, just no sound. The
@@ -68,6 +68,15 @@ holds the player; `Spielleiste.qml` sits in the same directory and uses it, and
 still needs an explicit `import "."`. Loading a page on its own does not reveal
 this — the failure is a runtime `ReferenceError`. `tools/qml-pruefen.sh` checks
 for it on purpose.
+
+**A missing theme icon is only a warning.** `image://theme/icon-m-forward`
+exists; `icon-m-backward`, its apparent counterpart, does not — the button
+simply renders empty and the log mentions it once. The real pair is
+`icon-m-10s-back` / `icon-m-10s-forward`, so the seek step is ten seconds, to
+match what the icon claims. The checker now resolves every
+`image://theme/…` against the theme, across all scale directories: `z1.0`
+holds only a handful of overrides, and checking just the first one reports
+everything as missing.
 
 ## Layout
 

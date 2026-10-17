@@ -36,5 +36,21 @@ echo "$AUS" | grep -q "PROBE medien     = QDeclarativeAudio" || {
 echo "$AUS" | grep -q "PROBE mpris      = Amber::DeclarativeMprisPlayer" || {
     echo "=== Amber.Mpris fehlt -- die App wuerde im Hintergrund weggeraeumt"; FEHLER=1; }
 
-[ $FEHLER -eq 0 ] && echo "QML in Ordnung (Seiten laden, Singleton und Mpris loesen auf)"
+# Jedes image://theme/<name> gegen den Themenordner halten. Ein fehlendes
+# Symbol ist nur eine Warnung im Protokoll und sonst ein leerer Knopf --
+# icon-m-forward gibt es, icon-m-backward nicht.
+# Ueber *alle* Groessenstufen suchen: z1.0 enthaelt nur eine Handvoll
+# Ueberschreibungen, der volle Satz liegt in der Stufe des Geraets.
+THEMEN=$(ls -d /usr/share/themes/sailfish-default/silica/z*/icons-monochrome 2>/dev/null)
+if [ -n "$THEMEN" ]; then
+    for name in $(grep -rhoE 'image://theme/[a-z0-9-]+' qml/ | sed 's|image://theme/||' | sort -u); do
+        DA=0
+        for t in $THEMEN; do [ -f "$t/$name.png" ] && { DA=1; break; }; done
+        [ $DA -eq 1 ] || { echo "=== Symbol fehlt im Thema: $name"; FEHLER=1; }
+    done
+else
+    echo "(Themenordner nicht gefunden -- Symbole ungeprueft)"
+fi
+
+[ $FEHLER -eq 0 ] && echo "QML in Ordnung (Seiten laden, Singleton, Mpris und Symbole)"
 exit $FEHLER
