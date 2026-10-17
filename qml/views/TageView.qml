@@ -5,11 +5,9 @@ import "../components"
 /*!
  * Die sieben Tage, die die Schnittstelle vorhaelt.
  */
-Page {
-    id: seite
-    allowedOrientations: Orientation.All
+Item {
+    id: ansicht
 
-    Rectangle { anchors.fill: parent; color: Farben.grund }
 
     property int tagVersatz: 0
     property var sendungen: []
@@ -24,8 +22,8 @@ Page {
     Connections {
         target: oe1
         onTagGeladen: {
-            if (datum === oe1.tagVor(seite.tagVersatz))
-                seite.sendungen = sendungen
+            if (datum === oe1.tagVor(ansicht.tagVersatz))
+                ansicht.sendungen = sendungen
         }
     }
 
@@ -34,25 +32,21 @@ Page {
         contentHeight: spalte.height + Theme.paddingLarge
 
         PullDownMenu {
-            MenuItem {
-                text: qsTr("Neu laden")
-                onClicked: seite.lade()
-            }
+            MenuItem { text: qsTr("Einstellungen"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/EinstellungenPage.qml")) }
+            MenuItem { text: qsTr("Mehr"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/MehrPage.qml")) }
+            MenuItem { text: qsTr("Suche"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/SuchePage.qml")) }
+            MenuItem { text: qsTr("Neu laden"); onClicked: ansicht.lade() }
         }
 
         Column {
             id: spalte
             width: parent.width
 
-            PageHeader {
-                title: qsTr("7 Tage")
-                _titleItem.color: Farben.rot
-            }
 
             ComboBox {
                 width: parent.width
                 label: qsTr("Tag")
-                currentIndex: seite.tagVersatz
+                currentIndex: ansicht.tagVersatz
                 menu: ContextMenu {
                     Repeater {
                         model: 7
@@ -60,9 +54,9 @@ Page {
                     }
                 }
                 onCurrentIndexChanged: {
-                    if (currentIndex !== seite.tagVersatz) {
-                        seite.tagVersatz = currentIndex
-                        seite.lade()
+                    if (currentIndex !== ansicht.tagVersatz) {
+                        ansicht.tagVersatz = currentIndex
+                        ansicht.lade()
                     }
                 }
             }
@@ -71,20 +65,20 @@ Page {
 
             Separator {
                 width: parent.width
-                color: Theme.secondaryColor
+                color: Farben.schriftMatt
                 horizontalAlignment: Qt.AlignHCenter
             }
 
             Repeater {
-                model: seite.sendungen
+                model: ansicht.sendungen
                 delegate: SendungsZeile {
-                    width: seite.width
+                    width: ansicht.width
                     sendung: modelData
                 }
             }
 
             ViewPlaceholder {
-                enabled: seite.sendungen.length === 0 && !oe1.busy
+                enabled: ansicht.sendungen.length === 0 && !oe1.busy
                 text: qsTr("Kein Programm")
                 hintText: qsTr("Für diesen Tag liefert die Schnittstelle nichts.")
             }
@@ -96,6 +90,6 @@ Page {
     BusyIndicator {
         anchors.centerIn: parent
         size: BusyIndicatorSize.Large
-        running: oe1.busy && seite.sendungen.length === 0
+        running: oe1.busy && ansicht.sendungen.length === 0
     }
 }

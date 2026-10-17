@@ -7,9 +7,17 @@ import "components"
 ApplicationWindow {
     id: app
 
-    initialPage: Component { MainPage {} }
+    initialPage: Component { ShellPage {} }
     cover: Component { CoverPage {} }
     allowedOrientations: defaultAllowedOrientations
+
+    // Der Grund unter allem -- sonst scheint bei Uebergaengen die Ambience
+    // durch, obwohl "dunkel" eingestellt ist.
+    Rectangle {
+        anchors.fill: parent
+        z: -1000
+        color: Farben.grund
+    }
 
     // Ein Fehler des Spielers soll nicht in der Stille verschwinden.
     Rectangle {

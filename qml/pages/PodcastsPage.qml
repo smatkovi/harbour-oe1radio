@@ -57,7 +57,7 @@ Page {
                     width: parent.width
                     text: qsTr("%1 Folgen").arg(modelData.anzahl)
                     font.pixelSize: Theme.fontSizeExtraSmall
-                    color: Theme.secondaryColor
+                    color: Farben.schriftMatt
                 }
             }
         }

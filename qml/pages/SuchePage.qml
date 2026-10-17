@@ -85,7 +85,7 @@ Page {
                     text: (modelData.zeit || "")
                           + (modelData.untertitel ? "  ·  " + modelData.untertitel : "")
                     font.pixelSize: Theme.fontSizeExtraSmall
-                    color: Theme.secondaryColor
+                    color: Farben.schriftMatt
                     truncationMode: TruncationMode.Fade
                 }
             }

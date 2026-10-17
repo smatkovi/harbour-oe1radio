@@ -17,7 +17,7 @@ Column {
 
     Separator {
         width: parent.width
-        color: Theme.secondaryColor
+        color: Farben.schriftMatt
         horizontalAlignment: Qt.AlignHCenter
     }
 
@@ -40,7 +40,7 @@ Column {
             Label {
                 width: parent.width
                 text: Spieler.titel
-                color: Theme.highlightColor
+                color: Farben.rot
                 wrapMode: Text.Wrap
                 maximumLineCount: 2
                 elide: Text.ElideRight
@@ -50,7 +50,7 @@ Column {
                 visible: text !== ""
                 text: Spieler.untertitel
                 font.pixelSize: Theme.fontSizeExtraSmall
-                color: Theme.secondaryColor
+                color: Farben.schriftMatt
                 wrapMode: Text.Wrap
                 maximumLineCount: 2
                 elide: Text.ElideRight

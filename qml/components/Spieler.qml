@@ -32,8 +32,9 @@ QtObject {
     readonly property int dauer: medien.duration
     readonly property bool spulbar: medien.seekable && !istLive
 
-    // Guete des Livestroms: niedrig | mittel | hoch
-    property string guete: "niedrig"
+    // Guete des Livestroms -- sie steht in den Einstellungen, damit sie
+    // einen Neustart ueberlebt.
+    readonly property string guete: Einstellungen.guete
 
     property MediaPlayer medien: MediaPlayer {
         autoPlay: false

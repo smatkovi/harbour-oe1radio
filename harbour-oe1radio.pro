@@ -16,12 +16,14 @@ SOURCES += \
     src/harbour-oe1radio.cpp \
     src/api.cpp \
     src/lader.cpp \
-    src/merker.cpp
+    src/merker.cpp \
+    src/einstellungen.cpp
 
 HEADERS += \
     src/api.h \
     src/lader.h \
-    src/merker.h
+    src/merker.h \
+    src/einstellungen.h
 
 DISTFILES += \
     harbour-oe1radio.desktop \
@@ -33,18 +35,29 @@ DISTFILES += \
     qml/components/Spielleiste.qml \
     qml/components/SendungsZeile.qml \
     qml/components/Farben.qml \
-    qml/pages/MainPage.qml \
-    qml/pages/SchedulePage.qml \
     qml/pages/PodcastsPage.qml \
     qml/pages/PodcastPage.qml \
+    qml/pages/ShellPage.qml \
+    qml/pages/SpielerPage.qml \
+    qml/pages/EinstellungenPage.qml \
     qml/pages/InfoPage.qml \
-    qml/pages/BeitraegePage.qml \
-    qml/pages/JournalePage.qml \
-    qml/pages/FavoritenPage.qml \
+    qml/views/JetztView.qml \
+    qml/views/TageView.qml \
+    qml/views/HighlightsView.qml \
+    qml/views/JournaleView.qml \
+    qml/views/FavoritenView.qml \
+    qml/components/TabLeiste.qml \
+    qml/components/MiniSpieler.qml \
     qml/pages/SuchePage.qml \
     qml/pages/AufnahmenPage.qml \
     qml/pages/MehrPage.qml \
     qml/pages/AboutPage.qml
+
+OTHER_FILES += \
+    tools/qml-pruefen.sh \
+    tools/make-icons.py \
+    tests/attrappen/harbour/oe1radio/qmldir \
+    tests/attrappen/harbour/oe1radio/Einstellungen.qml
 
 SAILFISHAPP_ICONS = 86x86 108x108 128x128 172x172
 

@@ -119,7 +119,7 @@ ListItem {
             text: sendung ? sendung.zeit : ""
             font.pixelSize: Theme.fontSizeSmall
             color: zeile.laeuft ? Farben.rot
-                 : zeile.enabled ? Theme.secondaryColor : Farben.kuenftig
+                 : zeile.enabled ? Farben.schriftMatt : Farben.kuenftig
         }
 
         Column {
@@ -132,14 +132,14 @@ ListItem {
                 maximumLineCount: 2
                 elide: Text.ElideRight
                 color: zeile.dieseSpielt ? Farben.rot
-                     : zeile.enabled ? Theme.primaryColor : Farben.kuenftig
+                     : zeile.enabled ? Farben.schrift : Farben.kuenftig
             }
             Label {
                 width: parent.width
                 visible: text !== ""
                 text: sendung && sendung.untertitel ? sendung.untertitel : ""
                 font.pixelSize: Theme.fontSizeExtraSmall
-                color: Theme.secondaryColor
+                color: Farben.schriftMatt
                 truncationMode: TruncationMode.Fade
             }
         }

@@ -16,7 +16,7 @@ CoverBackground {
             horizontalAlignment: Text.AlignHCenter
             text: "Ö1"
             font.pixelSize: Theme.fontSizeHuge
-            color: Theme.highlightColor
+            color: Farben.rot
         }
         Label {
             width: parent.width
@@ -25,7 +25,7 @@ CoverBackground {
             maximumLineCount: 3
             elide: Text.ElideRight
             font.pixelSize: Theme.fontSizeExtraSmall
-            color: Theme.secondaryColor
+            color: Farben.schriftMatt
             text: Spieler.hatQuelle ? Spieler.titel : qsTr("nicht verbunden")
         }
         Label {
@@ -33,7 +33,7 @@ CoverBackground {
             horizontalAlignment: Text.AlignHCenter
             visible: Spieler.schlaeft
             font.pixelSize: Theme.fontSizeExtraSmall
-            color: Theme.highlightColor
+            color: Farben.rot
             text: qsTr("Schlaf %1:%2")
                     .arg(Math.floor(Spieler.schlafRest / 60))
                     .arg(("0" + (Spieler.schlafRest % 60)).slice(-2))

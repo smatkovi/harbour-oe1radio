@@ -116,15 +116,45 @@ The official app was the reference for 0.2.0. Its APK decodes with `apktool`
 (the run ends in an OutOfMemoryError, but `res` is finished by then), and two
 files in it settle most design questions:
 
-- `res/menu/bottom_nav_menu.xml` — **five tabs**: Player, 7 Tage, Stories,
-  Journale, Favoriten; `res/navigation/mobile_navigation.xml` adds Info,
-  Suche, Podcasts and the sleep timer under "Mehr". Silica has no bottom
-  tabs, so the player is the main page and the rest hangs in its pulley menu
-  and on a "Mehr" page.
-- `res/values/colors.xml` — `oe1_red` **#b61f24**. That is taken as the only
-  accent; everything else comes from the ambience, so the app still looks
-  like the device it runs on. The ground is `#000000` on a dark ambience and
-  `#ffffff` on a light one.
+- `res/layout/activity_main.xml` — the frame: a title bar on top, the
+  content, a **mini player**, and a `BottomNavigationView` with
+  `background="@color/oe1_red"` at the bottom. Since 0.3.0 that is rebuilt
+  here (`TabLeiste.qml`, `MiniSpieler.qml`), because Silica has no bottom
+  tabs of its own. One detail from the same file is what makes five tabs fit
+  on a phone: `labelVisibilityMode="selected"` — **only the selected tab is
+  labelled**.
+- `res/menu/bottom_nav_menu.xml` — the **five tabs**: Player, 7 Tage,
+  Stories, Journale, Favoriten. What the Android app keeps under "Mehr"
+  (Podcasts, Suche, settings) hangs in the pulley menu here, which is where
+  a Sailfish user looks for it.
+- `res/values/colors.xml` — `oe1_red` **#b61f24**, the bottom bar's
+  background, with white for the selected tab and `#e7a9a7` for the rest.
+  The red is the only colour taken over; text and surfaces follow the
+  colour scheme below.
+
+## Colours
+
+Three schemes, under **Einstellungen**:
+
+| | |
+| --- | --- |
+| **Dunkel** | ground `#000000` — not the ambience's dark grey |
+| **Hell** | ground `#ffffff` |
+| **Der Ambience folgen** | whatever the device is set to |
+
+`Ö1-Rot als Akzent` can be switched off, and the app then uses the
+ambience's highlight colour instead. Everything the app paints goes through
+`Farben.qml` so the setting reaches every page — an earlier version left the
+ambience showing through on the cover and in a few labels.
+
+`Farben` is a QML singleton and needs the settings object. A QML singleton
+is **not** guaranteed to see the root context properties, so `Einstellungen`
+is registered as a proper singleton *type* (`qmlRegisterSingletonType`) in
+`harbour.oe1radio` rather than being set as a context property like the
+others. The offline checker cannot resolve that module, so
+`tests/attrappen/` holds a stub for it — without it the directory import of
+`components` fails and the checker silently stops testing the singletons it
+exists to test.
 
 Its strings settle a detail that would otherwise have been guesswork: the
 skip button is **15 minutes** (`backward_label`), not the ten seconds Silica's

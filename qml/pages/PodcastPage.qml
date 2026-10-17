@@ -100,14 +100,14 @@ Page {
                     width: parent.width
                     text: modelData.titel
                     truncationMode: TruncationMode.Fade
-                    color: zeile.dieseSpielt ? Theme.highlightColor : Theme.primaryColor
+                    color: zeile.dieseSpielt ? Farben.rot : Farben.schrift
                 }
                 Label {
                     width: parent.width
                     text: modelData.datum
                           + (zeile.anteil === 1 ? "   ↓" : "")
                     font.pixelSize: Theme.fontSizeExtraSmall
-                    color: zeile.anteil === 1 ? Farben.rot : Theme.secondaryColor
+                    color: zeile.anteil === 1 ? Farben.rot : Farben.schriftMatt
                 }
                 ProgressBar {
                     width: parent.width

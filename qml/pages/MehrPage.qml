@@ -22,14 +22,15 @@ Page {
             }
 
             Repeater {
+                // Highlights, Journale und Favoriten sind jetzt eigene
+                // Reiter unten -- hier steht nur noch, was dort nicht
+                // hinpasst. Genau wie "Mehr" in der Android-App.
                 model: [
-                    { name: qsTr("Highlights"),  ziel: "BeitraegePage.qml" },
-                    { name: qsTr("Journale"),    ziel: "JournalePage.qml" },
-                    { name: qsTr("Podcasts"),    ziel: "PodcastsPage.qml" },
-                    { name: qsTr("Favoriten"),   ziel: "FavoritenPage.qml" },
-                    { name: qsTr("Suche"),       ziel: "SuchePage.qml" },
-                    { name: qsTr("Aufnahmen"),   ziel: "AufnahmenPage.qml" },
-                    { name: qsTr("Über"),        ziel: "AboutPage.qml" }
+                    { name: qsTr("Podcasts"),      ziel: "PodcastsPage.qml" },
+                    { name: qsTr("Suche"),         ziel: "SuchePage.qml" },
+                    { name: qsTr("Aufnahmen"),     ziel: "AufnahmenPage.qml" },
+                    { name: qsTr("Einstellungen"), ziel: "EinstellungenPage.qml" },
+                    { name: qsTr("Über"),          ziel: "AboutPage.qml" }
                 ]
                 delegate: ListItem {
                     width: spalte.width
@@ -38,6 +39,7 @@ Page {
                         x: Theme.horizontalPageMargin
                         anchors.verticalCenter: parent.verticalCenter
                         text: modelData.name
+                        color: Farben.schrift
                     }
                 }
             }

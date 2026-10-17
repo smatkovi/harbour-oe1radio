@@ -1,12 +1,16 @@
 #include <QtQuick>
 #include <QGuiApplication>
 #include <QQuickView>
+#include <QQmlEngine>
+#include <QQmlContext>
+#include <QJSEngine>
 #include <QScopedPointer>
 #include <sailfishapp.h>
 
 #include "api.h"
 #include "lader.h"
 #include "merker.h"
+#include "einstellungen.h"
 
 int main(int argc, char *argv[])
 {
@@ -26,6 +30,18 @@ int main(int argc, char *argv[])
     Api api;
     Lader lader;
     Merker merker;
+    static Einstellungen einstellungen;
+
+    // Als Singleton-Typ, nicht als Kontext-Eigenschaft: das QML-Singleton
+    // Farben.qml braucht die Einstellungen, und dass ein Singleton die
+    // Kontext-Eigenschaften der Wurzel sieht, ist nicht zugesichert.
+    qmlRegisterSingletonType<Einstellungen>(
+        "harbour.oe1radio", 1, 0, "Einstellungen",
+        [](QQmlEngine *, QJSEngine *) -> QObject * {
+            QQmlEngine::setObjectOwnership(&einstellungen,
+                                           QQmlEngine::CppOwnership);
+            return &einstellungen;
+        });
     view->rootContext()->setContextProperty(QStringLiteral("oe1"), &api);
     view->rootContext()->setContextProperty(QStringLiteral("lader"), &lader);
     view->rootContext()->setContextProperty(QStringLiteral("merker"), &merker);

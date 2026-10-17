@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.2.0
+Version:    0.3.0
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -54,6 +54,16 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.3.0-1
+- Die Anordnung der Android-App: untere Reiterleiste in Ö1-Rot
+  (JETZT, 7 TAGE, HIGHLIGHTS, JOURNALE, FAVORITEN), darueber der
+  Minispieler, sobald etwas laeuft. Wie dort traegt nur der gewaehlte
+  Reiter seine Beschriftung.
+- Einstellungen: Farbschema (dunkel #000000 / hell / der Ambience folgen),
+  Ö1-Rot als Akzent an oder aus, Guete des Livestroms, Autoplay.
+- Das Farbschema greift jetzt ueberall, auch auf Cover und Minispieler --
+  vorher hat an manchen Stellen die Ambience durchgeschlagen.
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.2.0-1
 - Nach dem Vorbild der Android-App "Radio Ö1" 5.8.8: Highlights, Journale,
   Favoriten, Suche und "Info" zur Sendung. Deren fuenf Reiter gibt es auf

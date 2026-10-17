@@ -75,14 +75,14 @@ Page {
                 visible: text !== ""
                 text: seite.sendung.untertitel || ""
                 wrapMode: Text.Wrap
-                color: Theme.highlightColor
+                color: Farben.rot
             }
 
             Label {
                 x: Theme.horizontalPageMargin
                 width: parent.width - 2 * Theme.horizontalPageMargin
                 font.pixelSize: Theme.fontSizeSmall
-                color: Theme.secondaryColor
+                color: Farben.schriftMatt
                 text: {
                     var t = seite.sendung.zeit || ""
                     if (seite.sendung.dauer > 0)
@@ -132,7 +132,7 @@ Page {
                 wrapMode: Text.Wrap
                 textFormat: Text.StyledText
                 font.pixelSize: Theme.fontSizeSmall
-                color: Theme.primaryColor
+                color: Farben.schrift
                 linkColor: Farben.rot
                 onLinkActivated: Qt.openUrlExternally(link)
             }

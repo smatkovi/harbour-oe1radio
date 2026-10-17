@@ -18,11 +18,15 @@ MUSTER="is not a type|Expected token|Unexpected token|Syntax error|Cannot assign
 # Erwartbar, wenn eine Seite ohne die App geladen wird:
 # Die Kontext-Eigenschaften (oe1, lader, merker) und die Signale darauf gibt
 # es nur in der laufenden App; einzeln geladen fehlen sie zwangslaeufig.
-RAUSCHEN="__silica_applicationwindow_instance|ReferenceError: (oe1|lader|merker|appVersion) |Cannot assign to non-existent property \"on(TagGeladen|SendungGeladen|PodcastsGeladen|FolgenGeladen|BeitraegeGeladen|JournaleGeladen|SucheFertig|AufnahmenChanged|EintraegeChanged)\""
+# Den Singleton-Typ Einstellungen aus "harbour.oe1radio" meldet erst
+# main.cpp an. Fuer den Pruefer liegt in tests/attrappen eine Attrappe --
+# ohne sie scheitert schon der Verzeichnis-Import von "components", und
+# der Pruefer verlaere seine eigentliche Aufgabe.
+RAUSCHEN="__silica_applicationwindow_instance|ReferenceError: (oe1|lader|merker|Einstellungen|appVersion) |Cannot assign to non-existent property \"on(TagGeladen|SendungGeladen|PodcastsGeladen|FolgenGeladen|BeitraegeGeladen|JournaleGeladen|SucheFertig|AufnahmenChanged|EintraegeChanged)\""
 
 for f in qml/harbour-oe1radio.qml qml/cover/*.qml qml/pages/*.qml; do
     [ -f "$f" ] || continue
-    AUS=$(QT_LOGGING_TO_CONSOLE=1 QT_QPA_PLATFORM=minimal qmlscene --quit "$f" 2>&1)
+    AUS=$(QT_LOGGING_TO_CONSOLE=1 QT_QPA_PLATFORM=minimal qmlscene -I tests/attrappen --quit "$f" 2>&1)
     ECHT=$(echo "$AUS" | grep -E "$MUSTER" | grep -vE "$RAUSCHEN")
     if [ -n "$ECHT" ]; then
         echo "=== $f"; echo "$ECHT" | sed 's/^/    /'; FEHLER=1
@@ -31,7 +35,7 @@ done
 
 # Das Singleton eigens: ein fehlendes qmldir oder ein vergessenes
 # import "." faellt oben nicht auf, der Fehler kaeme erst zur Laufzeit.
-AUS=$(QT_LOGGING_TO_CONSOLE=1 QT_QPA_PLATFORM=minimal qmlscene --quit tests/singleton-probe.qml 2>&1)
+AUS=$(QT_LOGGING_TO_CONSOLE=1 QT_QPA_PLATFORM=minimal qmlscene -I tests/attrappen --quit tests/singleton-probe.qml 2>&1)
 echo "$AUS" | grep -q "PROBE medien     = QDeclarativeAudio" || {
     echo "=== Singleton Spieler loest nicht auf:"
     echo "$AUS" | grep -E "$MUSTER" | sed 's/^/    /' | head -6; FEHLER=1; }
@@ -45,7 +49,12 @@ echo "$AUS" | grep -q "PROBE mpris      = Amber::DeclarativeMprisPlayer" || {
 # Ueberschreibungen, der volle Satz liegt in der Stufe des Geraets.
 THEMEN=$(ls -d /usr/share/themes/sailfish-default/silica/z*/icons-monochrome 2>/dev/null)
 if [ -n "$THEMEN" ]; then
-    for name in $(grep -rhoE 'image://theme/[a-z0-9-]+' qml/ | sed 's|image://theme/||' | sort -u); do
+    # Zwei Schreibweisen: die volle Adresse, und blosse Symbolnamen, die
+    # erst zur Laufzeit zusammengesetzt werden (die Reiterleiste tut das,
+    # um die Farbe anzuhaengen) -- die faenge die erste Form nicht.
+    NAMEN=$( { grep -rhoE 'image://theme/[a-z0-9-]+' qml/ | sed 's|image://theme/||'
+               grep -rhoE '"icon-[a-z0-9-]+"' qml/ | tr -d '"'; } | sort -u )
+    for name in $NAMEN; do
         DA=0
         for t in $THEMEN; do [ -f "$t/$name.png" ] && { DA=1; break; }; done
         [ $DA -eq 1 ] || { echo "=== Symbol fehlt im Thema: $name"; FEHLER=1; }

@@ -75,7 +75,7 @@ Page {
                     visible: !modelData.laeuft
                     text: (modelData.groesse / 1048576).toFixed(1) + " MB"
                     font.pixelSize: Theme.fontSizeExtraSmall
-                    color: Theme.secondaryColor
+                    color: Farben.schriftMatt
                 }
             }
         }

@@ -3,30 +3,30 @@ import Sailfish.Silica 1.0
 import "../components"
 
 /*! Favoriten. Die Android-App hat kein Konto, also bleibt die Liste hier. */
-Page {
-    id: seite
-    allowedOrientations: Orientation.All
+Item {
+    id: ansicht
     property bool wartet: false
 
     Connections {
         target: oe1
         onSendungGeladen: {
-            if (seite.wartet) {
-                seite.wartet = false
-                pageStack.push(Qt.resolvedUrl("InfoPage.qml"), { sendung: sendung })
+            if (ansicht.wartet) {
+                ansicht.wartet = false
+                pageStack.push(Qt.resolvedUrl("../pages/InfoPage.qml"), { sendung: sendung })
             }
         }
     }
 
-    Rectangle { anchors.fill: parent; color: Farben.grund }
 
     SilicaListView {
         anchors.fill: parent
-        model: merker.eintraege
-        header: PageHeader {
-            title: qsTr("Favoriten")
-            _titleItem.color: Farben.rot
+
+        PullDownMenu {
+            MenuItem { text: qsTr("Einstellungen"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/EinstellungenPage.qml")) }
+            MenuItem { text: qsTr("Mehr"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/MehrPage.qml")) }
+            MenuItem { text: qsTr("Suche"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/SuchePage.qml")) }
         }
+        model: merker.eintraege
 
         delegate: ListItem {
             id: zeile
@@ -43,7 +43,7 @@ Page {
 
             onClicked: {
                 if (modelData.art === "sendung" && modelData.id) {
-                    seite.wartet = true
+                    ansicht.wartet = true
                     oe1.ladeSendung(modelData.id)
                 } else if (modelData.adresse) {
                     Spieler.spieleSendung(0, modelData.titel,
@@ -71,7 +71,7 @@ Page {
                     visible: text !== ""
                     text: modelData.untertitel || ""
                     font.pixelSize: Theme.fontSizeExtraSmall
-                    color: Theme.secondaryColor
+                    color: Farben.schriftMatt
                     truncationMode: TruncationMode.Fade
                 }
             }

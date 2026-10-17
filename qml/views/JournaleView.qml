@@ -7,9 +7,8 @@ import "../components"
  * Tag + Programmschluessel auf die Sendung -- die Schnittstelle gibt dafuer
  * keine fertige Tonadresse her, sie muss erst aufgeloest werden.
  */
-Page {
-    id: seite
-    allowedOrientations: Orientation.All
+Item {
+    id: ansicht
 
     property var tage: []
     property bool wartet: false
@@ -18,22 +17,24 @@ Page {
 
     Connections {
         target: oe1
-        onJournaleGeladen: seite.tage = tage
+        onJournaleGeladen: ansicht.tage = tage
         onSendungGeladen: {
-            if (seite.wartet) {
-                seite.wartet = false
-                pageStack.push(Qt.resolvedUrl("InfoPage.qml"), { sendung: sendung })
+            if (ansicht.wartet) {
+                ansicht.wartet = false
+                pageStack.push(Qt.resolvedUrl("../pages/InfoPage.qml"), { sendung: sendung })
             }
         }
     }
 
-    Rectangle { anchors.fill: parent; color: Farben.grund }
 
     SilicaFlickable {
         anchors.fill: parent
         contentHeight: spalte.height + Theme.paddingLarge
 
         PullDownMenu {
+            MenuItem { text: qsTr("Einstellungen"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/EinstellungenPage.qml")) }
+            MenuItem { text: qsTr("Mehr"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/MehrPage.qml")) }
+            MenuItem { text: qsTr("Suche"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/SuchePage.qml")) }
             MenuItem { text: qsTr("Neu laden"); onClicked: oe1.ladeJournale() }
         }
 
@@ -41,13 +42,9 @@ Page {
             id: spalte
             width: parent.width
 
-            PageHeader {
-                title: qsTr("Journale")
-                _titleItem.color: Farben.rot
-            }
 
             Repeater {
-                model: seite.tage
+                model: ansicht.tage
                 delegate: Column {
                     width: spalte.width
                     property var tagDaten: modelData
@@ -69,7 +66,7 @@ Page {
                                     width: parent.width - 2 * Theme.horizontalPageMargin
                                     anchors.verticalCenter: parent.verticalCenter
                                     text: (journal.zeit ? journal.zeit + "  " : "") + journal.titel
-                                    color: Theme.highlightColor
+                                    color: Farben.rot
                                     truncationMode: TruncationMode.Fade
                                 }
                             }
@@ -82,7 +79,7 @@ Page {
 
                                     onClicked: {
                                         if (modelData.tag && modelData.schluessel) {
-                                            seite.wartet = true
+                                            ansicht.wartet = true
                                             oe1.ladeSendungNachSchluessel(
                                                 modelData.tag, modelData.schluessel)
                                         }
@@ -122,7 +119,7 @@ Page {
             }
 
             ViewPlaceholder {
-                enabled: seite.tage.length === 0 && !oe1.busy
+                enabled: ansicht.tage.length === 0 && !oe1.busy
                 text: qsTr("Keine Journale")
             }
         }
@@ -132,6 +129,6 @@ Page {
     BusyIndicator {
         anchors.centerIn: parent
         size: BusyIndicatorSize.Large
-        running: oe1.busy && seite.tage.length === 0
+        running: oe1.busy && ansicht.tage.length === 0
     }
 }

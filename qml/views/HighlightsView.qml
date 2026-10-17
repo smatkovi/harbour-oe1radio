@@ -2,10 +2,9 @@ import QtQuick 2.6
 import Sailfish.Silica 1.0
 import "../components"
 
-/*! "Highlights" der Android-App: die Beitraege der Ö1-Startseite. */
-Page {
-    id: seite
-    allowedOrientations: Orientation.All
+/*! "Highlights" der Android-App: die Beitraege der Ö1-Startansicht. */
+Item {
+    id: ansicht
 
     property var beitraege: []
 
@@ -13,27 +12,25 @@ Page {
 
     Connections {
         target: oe1
-        onBeitraegeGeladen: seite.beitraege = beitraege
+        onBeitraegeGeladen: ansicht.beitraege = beitraege
         onSendungGeladen: {
-            if (seite.status === PageStatus.Active && seite.wartet) {
-                seite.wartet = false
-                pageStack.push(Qt.resolvedUrl("InfoPage.qml"), { sendung: sendung })
+            if (ansicht.status === PageStatus.Active && ansicht.wartet) {
+                ansicht.wartet = false
+                pageStack.push(Qt.resolvedUrl("../pages/InfoPage.qml"), { sendung: sendung })
             }
         }
     }
     property bool wartet: false
 
-    Rectangle { anchors.fill: parent; color: Farben.grund }
 
     SilicaListView {
         anchors.fill: parent
-        model: seite.beitraege
-        header: PageHeader {
-            title: qsTr("Highlights")
-            _titleItem.color: Farben.rot
-        }
+        model: ansicht.beitraege
 
         PullDownMenu {
+            MenuItem { text: qsTr("Einstellungen"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/EinstellungenPage.qml")) }
+            MenuItem { text: qsTr("Mehr"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/MehrPage.qml")) }
+            MenuItem { text: qsTr("Suche"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/SuchePage.qml")) }
             MenuItem { text: qsTr("Neu laden"); onClicked: oe1.ladeBeitraege(0) }
         }
 
@@ -42,9 +39,9 @@ Page {
 
             onClicked: {
                 // Der Beitrag nennt den Programmschluessel, nicht die
-                // Sendungsnummer -- erst aufloesen, dann die Infoseite.
+                // Sendungsnummer -- erst aufloesen, dann die Infoansicht.
                 if (modelData.schluessel && modelData.tag) {
-                    seite.wartet = true
+                    ansicht.wartet = true
                     oe1.ladeSendungNachSchluessel(modelData.tag, modelData.schluessel)
                 } else if (modelData.seite) {
                     Qt.openUrlExternally(modelData.seite)
@@ -95,7 +92,7 @@ Page {
         }
 
         ViewPlaceholder {
-            enabled: seite.beitraege.length === 0 && !oe1.busy
+            enabled: ansicht.beitraege.length === 0 && !oe1.busy
             text: qsTr("Keine Beiträge")
         }
         VerticalScrollDecorator {}
@@ -104,6 +101,6 @@ Page {
     BusyIndicator {
         anchors.centerIn: parent
         size: BusyIndicatorSize.Large
-        running: oe1.busy && seite.beitraege.length === 0
+        running: oe1.busy && ansicht.beitraege.length === 0
     }
 }
