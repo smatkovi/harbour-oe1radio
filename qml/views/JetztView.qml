@@ -66,11 +66,11 @@ Item {
         anchors.fill: parent
         contentHeight: spalte.height + Theme.paddingLarge
 
-        PullDownMenu {
-            MenuItem { text: qsTr("Einstellungen"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/EinstellungenPage.qml")) }
-            MenuItem { text: qsTr("Mehr"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/MehrPage.qml")) }
-            MenuItem { text: qsTr("Suche"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/SuchePage.qml")) }
-            MenuItem { text: qsTr("Neu laden"); onClicked: ansicht.ladeHeute() }
+        Pulley {
+            PulleyEintrag { text: qsTr("Einstellungen"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/EinstellungenPage.qml")) }
+            PulleyEintrag { text: qsTr("Mehr"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/MehrPage.qml")) }
+            PulleyEintrag { text: qsTr("Suche"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/SuchePage.qml")) }
+            PulleyEintrag { text: qsTr("Neu laden"); onClicked: ansicht.ladeHeute() }
         }
 
         Column {
@@ -122,6 +122,9 @@ Item {
                 spacing: Theme.paddingSmall
 
                 Button {
+                    palette.primaryColor: Farben.schrift
+                    palette.highlightColor: Farben.rot
+                    palette.highlightBackgroundColor: Farben.rot
                     width: (parent.width - Theme.paddingSmall) / 2
                     text: Spieler.istLive && Spieler.spielt ? qsTr("Anhalten")
                                                             : qsTr("Live hören")
@@ -133,6 +136,9 @@ Item {
                     }
                 }
                 Button {
+                    palette.primaryColor: Farben.schrift
+                    palette.highlightColor: Farben.rot
+                    palette.highlightBackgroundColor: Farben.rot
                     width: (parent.width - Theme.paddingSmall) / 2
                     enabled: ansicht.laufendeId > 0
                     text: qsTr("Info")
@@ -152,7 +158,7 @@ Item {
                 horizontalAlignment: Qt.AlignHCenter
             }
 
-            SectionHeader { text: qsTr("Heute") }
+            Abschnitt { text: qsTr("Heute") }
 
             Repeater {
                 model: ansicht.sendungen
@@ -169,6 +175,7 @@ Item {
     }
 
     BusyIndicator {
+        palette.highlightColor: Farben.rot
         anchors.centerIn: parent
         size: BusyIndicatorSize.Large
         running: oe1.busy && ansicht.sendungen.length === 0

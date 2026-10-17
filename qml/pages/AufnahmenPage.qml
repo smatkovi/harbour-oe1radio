@@ -15,9 +15,8 @@ Page {
     SilicaListView {
         anchors.fill: parent
         model: lader.aufnahmen
-        header: PageHeader {
+        header: Titel {
             title: qsTr("Aufnahmen")
-            _titleItem.color: Farben.rot
         }
 
         delegate: ListItem {
@@ -25,7 +24,8 @@ Page {
             contentHeight: inhalt.height + Theme.paddingMedium
 
             menu: ContextMenu {
-                MenuItem {
+                backgroundColor: Farben.flaeche
+                MenuEintrag {
                     visible: modelData.laeuft
                     text: qsTr("Abbrechen")
                     onClicked: lader.abbrechen(modelData.kennung)
@@ -63,6 +63,9 @@ Page {
                     elide: Text.ElideRight
                 }
                 ProgressBar {
+                    palette.primaryColor: Farben.schrift
+                    palette.secondaryColor: Farben.schriftMatt
+                    palette.highlightColor: Farben.rot
                     width: parent.width
                     visible: modelData.laeuft
                     minimumValue: 0
@@ -81,6 +84,9 @@ Page {
         }
 
         ViewPlaceholder {
+            palette.primaryColor: Farben.schrift
+            palette.secondaryColor: Farben.schriftMatt
+            palette.highlightColor: Farben.rot
             enabled: lader.aufnahmen.length === 0
             text: qsTr("Keine Aufnahmen")
             hintText: qsTr("In der Info einer Sendung oder bei einer Podcastfolge „Herunterladen“.")

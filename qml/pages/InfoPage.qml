@@ -23,8 +23,8 @@ Page {
         anchors.fill: parent
         contentHeight: spalte.height + Theme.paddingLarge
 
-        PullDownMenu {
-            MenuItem {
+        Pulley {
+            PulleyEintrag {
                 text: seite.gemerkt ? qsTr("Nicht mehr merken") : qsTr("Als Favorit merken")
                 onClicked: merker.umschalten(seite.kennung, {
                     titel: seite.sendung.titel,
@@ -56,9 +56,8 @@ Page {
             width: parent.width
             spacing: Theme.paddingMedium
 
-            PageHeader {
+            Titel {
                 title: seite.sendung.titel || qsTr("Sendung")
-                _titleItem.color: Farben.rot
             }
 
             Image {
@@ -93,6 +92,9 @@ Page {
 
             // Fortschritt einer laufenden Aufnahme
             ProgressBar {
+                palette.primaryColor: Farben.schrift
+                palette.secondaryColor: Farben.schriftMatt
+                palette.highlightColor: Farben.rot
                 width: parent.width
                 visible: seite.anteil >= 0 && seite.anteil < 1
                 minimumValue: 0
@@ -111,6 +113,9 @@ Page {
             }
 
             Button {
+                palette.primaryColor: Farben.schrift
+                palette.highlightColor: Farben.rot
+                palette.highlightBackgroundColor: Farben.rot
                 anchors.horizontalCenter: parent.horizontalCenter
                 visible: !!seite.sendung.adresse
                 text: qsTr("Anhören")

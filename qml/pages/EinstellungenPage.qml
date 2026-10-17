@@ -17,22 +17,25 @@ Page {
             id: spalte
             width: parent.width
 
-            PageHeader {
+            Titel {
                 title: qsTr("Einstellungen")
-                _titleItem.color: Farben.rot
             }
 
-            SectionHeader { text: qsTr("Darstellung") }
+            Abschnitt { text: qsTr("Darstellung") }
 
             ComboBox {
+                palette.primaryColor: Farben.schrift
+                palette.secondaryColor: Farben.schriftMatt
+                palette.highlightColor: Farben.rot
                 width: parent.width
                 label: qsTr("Farbschema")
                 currentIndex: Einstellungen.farbschema === "dunkel" ? 0
                             : Einstellungen.farbschema === "hell" ? 1 : 2
                 menu: ContextMenu {
-                    MenuItem { text: qsTr("Dunkel (#000000)") }
-                    MenuItem { text: qsTr("Hell") }
-                    MenuItem { text: qsTr("Der Ambience folgen") }
+                    backgroundColor: Farben.flaeche
+                    MenuEintrag { text: qsTr("Dunkel (#000000)") }
+                    MenuEintrag { text: qsTr("Hell") }
+                    MenuEintrag { text: qsTr("Der Ambience folgen") }
                 }
                 onCurrentIndexChanged: {
                     Einstellungen.farbschema = currentIndex === 0 ? "dunkel"
@@ -41,24 +44,31 @@ Page {
             }
 
             TextSwitch {
+                palette.primaryColor: Farben.schrift
+                palette.secondaryColor: Farben.schriftMatt
+                palette.highlightColor: Farben.rot
                 text: qsTr("Ö1-Rot als Akzent")
                 description: qsTr("Die Hausfarbe der Ö1-App (#b61f24). Abgeschaltet nimmt die App die Akzentfarbe der Ambience.")
                 checked: Einstellungen.oe1Rot
                 onClicked: Einstellungen.oe1Rot = checked
             }
 
-            SectionHeader { text: qsTr("Wiedergabe") }
+            Abschnitt { text: qsTr("Wiedergabe") }
 
             ComboBox {
+                palette.primaryColor: Farben.schrift
+                palette.secondaryColor: Farben.schriftMatt
+                palette.highlightColor: Farben.rot
                 width: parent.width
                 label: qsTr("Güte des Livestroms")
                 currentIndex: Einstellungen.guete === "hoch" ? 2
                             : Einstellungen.guete === "mittel" ? 1 : 0
                 description: qsTr("Die hohe Güte ist der HLS-Strom, den die Android-App ebenfalls verwendet.")
                 menu: ContextMenu {
-                    MenuItem { text: qsTr("niedrig (32 kbit/s)") }
-                    MenuItem { text: qsTr("mittel (128 kbit/s)") }
-                    MenuItem { text: qsTr("hoch (HLS)") }
+                    backgroundColor: Farben.flaeche
+                    MenuEintrag { text: qsTr("niedrig (32 kbit/s)") }
+                    MenuEintrag { text: qsTr("mittel (128 kbit/s)") }
+                    MenuEintrag { text: qsTr("hoch (HLS)") }
                 }
                 onCurrentIndexChanged: {
                     var neu = currentIndex === 2 ? "hoch"
@@ -72,13 +82,16 @@ Page {
             }
 
             TextSwitch {
+                palette.primaryColor: Farben.schrift
+                palette.secondaryColor: Farben.schriftMatt
+                palette.highlightColor: Farben.rot
                 text: qsTr("Autoplay")
                 description: qsTr("Beim Starten der App gleich den Livestrom spielen.")
                 checked: Einstellungen.autoplay
                 onClicked: Einstellungen.autoplay = checked
             }
 
-            SectionHeader { text: qsTr("Aufnahmen") }
+            Abschnitt { text: qsTr("Aufnahmen") }
 
             Label {
                 x: Theme.horizontalPageMargin
@@ -90,6 +103,9 @@ Page {
             }
 
             Button {
+                palette.primaryColor: Farben.schrift
+                palette.highlightColor: Farben.rot
+                palette.highlightBackgroundColor: Farben.rot
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: qsTr("Aufnahmen verwalten")
                 onClicked: pageStack.push(Qt.resolvedUrl("AufnahmenPage.qml"))

@@ -20,13 +20,12 @@ Page {
     SilicaListView {
         anchors.fill: parent
         model: seite.podcasts
-        header: PageHeader {
+        header: Titel {
             title: qsTr("Podcasts")
-            _titleItem.color: Farben.rot
         }
 
-        PullDownMenu {
-            MenuItem {
+        Pulley {
+            PulleyEintrag {
                 text: qsTr("Neu laden")
                 onClicked: oe1.ladePodcasts()
             }
@@ -63,6 +62,9 @@ Page {
         }
 
         ViewPlaceholder {
+            palette.primaryColor: Farben.schrift
+            palette.secondaryColor: Farben.schriftMatt
+            palette.highlightColor: Farben.rot
             enabled: seite.podcasts.length === 0 && !oe1.busy
             text: qsTr("Keine Podcasts")
         }
@@ -71,6 +73,7 @@ Page {
     }
 
     BusyIndicator {
+        palette.highlightColor: Farben.rot
         anchors.centerIn: parent
         size: BusyIndicatorSize.Large
         running: oe1.busy && seite.podcasts.length === 0

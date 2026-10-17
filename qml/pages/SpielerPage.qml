@@ -17,9 +17,8 @@ Page {
             width: parent.width
             spacing: Theme.paddingMedium
 
-            PageHeader {
+            Titel {
                 title: Spieler.istLive ? qsTr("Live") : qsTr("Wiedergabe")
-                _titleItem.color: Farben.rot
             }
 
             Label {

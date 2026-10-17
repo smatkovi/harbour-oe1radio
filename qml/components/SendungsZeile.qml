@@ -63,7 +63,8 @@ ListItem {
     }
 
     menu: ContextMenu {
-        MenuItem {
+        backgroundColor: Farben.flaeche
+        MenuEintrag {
             text: qsTr("Info")
             onClicked: zeile.anstossen("info")
         }

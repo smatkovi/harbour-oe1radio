@@ -62,6 +62,8 @@ Rectangle {
         }
 
         IconButton {
+            palette.primaryColor: Farben.schrift
+            palette.highlightColor: Farben.rot
             id: knopf
             anchors.verticalCenter: parent.verticalCenter
             icon.source: Spieler.spielt ? "image://theme/icon-m-pause"

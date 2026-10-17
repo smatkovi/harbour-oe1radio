@@ -16,9 +16,8 @@ Page {
             id: spalte
             width: parent.width
 
-            PageHeader {
+            Titel {
                 title: qsTr("Mehr")
-                _titleItem.color: Farben.rot
             }
 
             Repeater {

@@ -41,12 +41,18 @@ DISTFILES += \
     qml/pages/SpielerPage.qml \
     qml/pages/EinstellungenPage.qml \
     qml/pages/InfoPage.qml \
+    qml/pages/BeitragPage.qml \
     qml/views/JetztView.qml \
     qml/views/TageView.qml \
     qml/views/HighlightsView.qml \
     qml/views/JournaleView.qml \
     qml/views/FavoritenView.qml \
     qml/components/TabLeiste.qml \
+    qml/components/Pulley.qml \
+    qml/components/PulleyEintrag.qml \
+    qml/components/MenuEintrag.qml \
+    qml/components/Titel.qml \
+    qml/components/Abschnitt.qml \
     qml/components/MiniSpieler.qml \
     qml/pages/SuchePage.qml \
     qml/pages/AufnahmenPage.qml \

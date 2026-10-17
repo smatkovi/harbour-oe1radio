@@ -61,6 +61,9 @@ Column {
     // Fortschritt gibt es nur bei einer Aufzeichnung; ein Livestrom hat
     // weder Laenge noch Position.
     Slider {
+        palette.primaryColor: Farben.schrift
+        palette.secondaryColor: Farben.schriftMatt
+        palette.highlightColor: Farben.rot
         width: parent.width
         visible: Spieler.spulbar && Spieler.dauer > 0
         minimumValue: 0
@@ -90,11 +93,15 @@ Column {
         // kein Symbol -- das Zehn-Sekunden-Paar waere gelogen, deshalb die
         // schlichten Pfeile mit der Weite als Beschriftung daneben.
         IconButton {
+            palette.primaryColor: Farben.schrift
+            palette.highlightColor: Farben.rot
             icon.source: "image://theme/icon-m-previous"
             visible: Spieler.spulbar
             onClicked: Spieler.spulen(-15 * 60000)
         }
         IconButton {
+            palette.primaryColor: Farben.schrift
+            palette.highlightColor: Farben.rot
             icon.source: Spieler.spielt ? "image://theme/icon-l-pause"
                                         : "image://theme/icon-l-play"
             // Der einzige Ort, an dem die Android-App ihr Rot auf ein
@@ -104,17 +111,22 @@ Column {
             onClicked: Spieler.umschalten()
         }
         IconButton {
+            palette.primaryColor: Farben.schrift
+            palette.highlightColor: Farben.rot
             icon.source: "image://theme/icon-m-next"
             visible: Spieler.spulbar
             onClicked: Spieler.spulen(15 * 60000)
         }
         IconButton {
+            palette.primaryColor: Farben.schrift
+            palette.highlightColor: Farben.rot
             icon.source: "image://theme/icon-m-clear"
             onClicked: Spieler.anhalten()
         }
     }
 
     BusyIndicator {
+        palette.highlightColor: Farben.rot
         anchors.horizontalCenter: parent.horizontalCenter
         size: BusyIndicatorSize.Small
         running: Spieler.laedt
@@ -133,6 +145,9 @@ Column {
         Repeater {
             model: [15, 30, 60]
             delegate: Button {
+                palette.primaryColor: Farben.schrift
+                palette.highlightColor: Farben.rot
+                palette.highlightBackgroundColor: Farben.rot
                 width: (parent.width - 2 * Theme.paddingSmall) / 3
                 text: qsTr("%1 min").arg(modelData)
                 onClicked: Spieler.schlafStarten(modelData)
@@ -141,6 +156,9 @@ Column {
     }
 
     Button {
+        palette.primaryColor: Farben.schrift
+        palette.highlightColor: Farben.rot
+        palette.highlightBackgroundColor: Farben.rot
         x: Theme.horizontalPageMargin
         width: parent.width - 2 * Theme.horizontalPageMargin
         visible: Spieler.schlaeft

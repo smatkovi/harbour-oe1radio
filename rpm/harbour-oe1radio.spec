@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.3.0
+Version:    0.4.0
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -15,6 +15,9 @@ Requires:   qt5-qtmultimedia-plugin-mediaservice-gstmediaplayer
 # Sperrbildschirm und Medientasten -- und der Grund, warum die App im
 # Hintergrund weiterspielen darf, statt weggeraeumt zu werden.
 Requires:   amber-qml-plugin-mpris
+# Die Beitragsseite zeigt die fertige HTML-Ansicht des ORF, so wie die
+# Android-App es in ihrem story_detail_dest tut.
+Requires:   sailfish-components-webview-qt5
 
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
@@ -54,6 +57,19 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.4.0-1
+- Das Farbschema greift jetzt wirklich ueberall, auch im Pulley-Menü, in
+  Kontextmenues, Knoepfen, Schaltern und Auswahlfeldern. Silica vererbt
+  seine Palette naemlich **nicht**: sie ist je Bedienelement eigen und als
+  Ganzes schreibgeschuetzt (nachgemessen). Die Werte stehen deshalb an
+  jedem Element -- gebuendelt in den Huellen Pulley, PulleyEintrag,
+  MenuEintrag, Titel und Abschnitt.
+- Das Pulley-Menü ist Ö1-rot mit weisser Schrift, wie die untere Leiste.
+- Highlights oeffnen in der App statt im Browser, mit der HTML-Ansicht des
+  ORF (article-view/...) -- so wie es die Android-App in ihrem
+  story_detail_dest tut. Darunter zwei Knoepfe: zur Sendung, oder doch im
+  Browser.
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.3.0-1
 - Die Anordnung der Android-App: untere Reiterleiste in Ö1-Rot
   (JETZT, 7 TAGE, HIGHLIGHTS, JOURNALE, FAVORITEN), darueber der

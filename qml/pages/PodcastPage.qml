@@ -29,9 +29,8 @@ Page {
 
         header: Column {
             width: seite.width
-            PageHeader {
+            Titel {
                 title: seite.podcastTitel
-                _titleItem.color: Farben.rot
             }
             Spielleiste { width: parent.width }
         }
@@ -49,7 +48,8 @@ Page {
                                              ? lader.fortschritt(kennung) : -1
 
             menu: ContextMenu {
-                MenuItem {
+                backgroundColor: Farben.flaeche
+                MenuEintrag {
                     visible: zeile.anteil < 0
                     text: qsTr("Herunterladen")
                     onClicked: lader.hole(zeile.kennung, modelData.titel,
@@ -110,6 +110,9 @@ Page {
                     color: zeile.anteil === 1 ? Farben.rot : Farben.schriftMatt
                 }
                 ProgressBar {
+                    palette.primaryColor: Farben.schrift
+                    palette.secondaryColor: Farben.schriftMatt
+                    palette.highlightColor: Farben.rot
                     width: parent.width
                     visible: zeile.anteil >= 0 && zeile.anteil < 1
                     minimumValue: 0; maximumValue: 1
@@ -119,6 +122,9 @@ Page {
         }
 
         ViewPlaceholder {
+            palette.primaryColor: Farben.schrift
+            palette.secondaryColor: Farben.schriftMatt
+            palette.highlightColor: Farben.rot
             enabled: seite.folgen.length === 0 && !oe1.busy
             text: qsTr("Keine Folgen")
         }
@@ -127,6 +133,7 @@ Page {
     }
 
     BusyIndicator {
+        palette.highlightColor: Farben.rot
         anchors.centerIn: parent
         size: BusyIndicatorSize.Large
         running: oe1.busy && seite.folgen.length === 0

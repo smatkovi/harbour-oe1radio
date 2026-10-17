@@ -31,11 +31,11 @@ Item {
         anchors.fill: parent
         contentHeight: spalte.height + Theme.paddingLarge
 
-        PullDownMenu {
-            MenuItem { text: qsTr("Einstellungen"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/EinstellungenPage.qml")) }
-            MenuItem { text: qsTr("Mehr"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/MehrPage.qml")) }
-            MenuItem { text: qsTr("Suche"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/SuchePage.qml")) }
-            MenuItem { text: qsTr("Neu laden"); onClicked: oe1.ladeJournale() }
+        Pulley {
+            PulleyEintrag { text: qsTr("Einstellungen"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/EinstellungenPage.qml")) }
+            PulleyEintrag { text: qsTr("Mehr"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/MehrPage.qml")) }
+            PulleyEintrag { text: qsTr("Suche"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/SuchePage.qml")) }
+            PulleyEintrag { text: qsTr("Neu laden"); onClicked: oe1.ladeJournale() }
         }
 
         Column {
@@ -49,7 +49,7 @@ Item {
                     width: spalte.width
                     property var tagDaten: modelData
 
-                    SectionHeader { text: modelData.name || "" }
+                    Abschnitt { text: modelData.name || "" }
 
                     Repeater {
                         model: modelData.journale
@@ -119,6 +119,9 @@ Item {
             }
 
             ViewPlaceholder {
+                palette.primaryColor: Farben.schrift
+                palette.secondaryColor: Farben.schriftMatt
+                palette.highlightColor: Farben.rot
                 enabled: ansicht.tage.length === 0 && !oe1.busy
                 text: qsTr("Keine Journale")
             }
@@ -127,6 +130,7 @@ Item {
     }
 
     BusyIndicator {
+        palette.highlightColor: Farben.rot
         anchors.centerIn: parent
         size: BusyIndicatorSize.Large
         running: oe1.busy && ansicht.tage.length === 0

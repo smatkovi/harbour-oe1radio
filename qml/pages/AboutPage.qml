@@ -16,9 +16,8 @@ Page {
             width: parent.width
             spacing: Theme.paddingMedium
 
-            PageHeader {
+            Titel {
                 title: qsTr("Über")
-                _titleItem.color: Farben.rot
             }
 
             Label {

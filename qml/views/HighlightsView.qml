@@ -27,26 +27,21 @@ Item {
         anchors.fill: parent
         model: ansicht.beitraege
 
-        PullDownMenu {
-            MenuItem { text: qsTr("Einstellungen"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/EinstellungenPage.qml")) }
-            MenuItem { text: qsTr("Mehr"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/MehrPage.qml")) }
-            MenuItem { text: qsTr("Suche"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/SuchePage.qml")) }
-            MenuItem { text: qsTr("Neu laden"); onClicked: oe1.ladeBeitraege(0) }
+        Pulley {
+            PulleyEintrag { text: qsTr("Einstellungen"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/EinstellungenPage.qml")) }
+            PulleyEintrag { text: qsTr("Mehr"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/MehrPage.qml")) }
+            PulleyEintrag { text: qsTr("Suche"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/SuchePage.qml")) }
+            PulleyEintrag { text: qsTr("Neu laden"); onClicked: oe1.ladeBeitraege(0) }
         }
 
         delegate: ListItem {
             contentHeight: inhalt.height + Theme.paddingLarge
 
-            onClicked: {
-                // Der Beitrag nennt den Programmschluessel, nicht die
-                // Sendungsnummer -- erst aufloesen, dann die Infoansicht.
-                if (modelData.schluessel && modelData.tag) {
-                    ansicht.wartet = true
-                    oe1.ladeSendungNachSchluessel(modelData.tag, modelData.schluessel)
-                } else if (modelData.seite) {
-                    Qt.openUrlExternally(modelData.seite)
-                }
-            }
+            // In der App oeffnen, nicht im Browser: die Android-App hat
+            // dafuer ebenfalls eine eigene Ansicht (story_detail_dest), und
+            // article-view/... liefert die fertige Seite dafuer.
+            onClicked: pageStack.push(Qt.resolvedUrl("../pages/BeitragPage.qml"),
+                                      { beitrag: modelData })
 
             Row {
                 id: inhalt
@@ -92,6 +87,9 @@ Item {
         }
 
         ViewPlaceholder {
+            palette.primaryColor: Farben.schrift
+            palette.secondaryColor: Farben.schriftMatt
+            palette.highlightColor: Farben.rot
             enabled: ansicht.beitraege.length === 0 && !oe1.busy
             text: qsTr("Keine Beiträge")
         }
@@ -99,6 +97,7 @@ Item {
     }
 
     BusyIndicator {
+        palette.highlightColor: Farben.rot
         anchors.centerIn: parent
         size: BusyIndicatorSize.Large
         running: oe1.busy && ansicht.beitraege.length === 0

@@ -37,11 +37,13 @@ Page {
 
         header: Column {
             width: seite.width
-            PageHeader {
+            Titel {
                 title: qsTr("Suche")
-                _titleItem.color: Farben.rot
             }
             SearchField {
+                palette.primaryColor: Farben.schrift
+                palette.secondaryColor: Farben.schriftMatt
+                palette.highlightColor: Farben.rot
                 width: parent.width
                 placeholderText: qsTr("Sendung suchen")
                 inputMethodHints: Qt.ImhNoPredictiveText
@@ -92,6 +94,9 @@ Page {
         }
 
         ViewPlaceholder {
+            palette.primaryColor: Farben.schrift
+            palette.secondaryColor: Farben.schriftMatt
+            palette.highlightColor: Farben.rot
             enabled: seite.gesucht && seite.treffer.length === 0
             text: qsTr("Nichts gefunden")
             hintText: qsTr("Gesucht wird in den sieben Tagen, die der ORF vorhält.")
@@ -100,6 +105,7 @@ Page {
     }
 
     BusyIndicator {
+        palette.highlightColor: Farben.rot
         anchors.centerIn: parent
         size: BusyIndicatorSize.Large
         running: oe1.busy && !seite.gesucht

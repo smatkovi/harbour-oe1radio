@@ -21,10 +21,10 @@ Item {
     SilicaListView {
         anchors.fill: parent
 
-        PullDownMenu {
-            MenuItem { text: qsTr("Einstellungen"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/EinstellungenPage.qml")) }
-            MenuItem { text: qsTr("Mehr"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/MehrPage.qml")) }
-            MenuItem { text: qsTr("Suche"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/SuchePage.qml")) }
+        Pulley {
+            PulleyEintrag { text: qsTr("Einstellungen"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/EinstellungenPage.qml")) }
+            PulleyEintrag { text: qsTr("Mehr"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/MehrPage.qml")) }
+            PulleyEintrag { text: qsTr("Suche"); onClicked: pageStack.push(Qt.resolvedUrl("../pages/SuchePage.qml")) }
         }
         model: merker.eintraege
 
@@ -38,7 +38,8 @@ Item {
             }
 
             menu: ContextMenu {
-                MenuItem { text: qsTr("Entfernen"); onClicked: zeile.entfernen() }
+                backgroundColor: Farben.flaeche
+                MenuEintrag { text: qsTr("Entfernen"); onClicked: zeile.entfernen() }
             }
 
             onClicked: {
@@ -78,6 +79,9 @@ Item {
         }
 
         ViewPlaceholder {
+            palette.primaryColor: Farben.schrift
+            palette.secondaryColor: Farben.schriftMatt
+            palette.highlightColor: Farben.rot
             enabled: merker.eintraege.length === 0
             text: qsTr("Keine Favoriten")
             hintText: qsTr("In der Info einer Sendung oder Folge „Als Favorit merken“.")
