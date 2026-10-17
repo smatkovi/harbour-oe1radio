@@ -124,7 +124,7 @@ Page {
             // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
             palette.highlightBackgroundColor: Farben.band
             id: zeile
-            contentHeight: zeilen.height + Theme.paddingMedium
+            contentHeight: zeilen.height + 2 * Theme.paddingSmall
 
             property bool aufgeklappt: false
             // modelData ist im Kontextmenü nicht verlaesslich sichtbar --
@@ -152,7 +152,6 @@ Page {
                     })
                 }
                 MenuEintrag {
-                    visible: !!zeile.daten.text
                     text: zeile.aufgeklappt ? qsTr("Beschreibung einklappen")
                                             : qsTr("Beschreibung zeigen")
                     onClicked: zeile.aufgeklappt = !zeile.aufgeklappt
@@ -196,13 +195,17 @@ Page {
                 }
             }
 
+            // Oben verankert, nicht mittig: contentHeight haengt an der
+            // Hoehe dieser Spalte, und eine Spalte, die sich zugleich in
+            // eben dieser Hoehe zentriert, waechst beim Aufklappen nicht
+            // sauber nach -- derselbe Ringschluss wie beim InfoBanner.
             Column {
                 id: zeilen
+                y: Theme.paddingSmall
                 anchors {
                     left: parent.left; right: parent.right
                     leftMargin: Theme.horizontalPageMargin
                     rightMargin: Theme.horizontalPageMargin
-                    verticalCenter: parent.verticalCenter
                 }
                 Label {
                     width: parent.width
@@ -226,8 +229,15 @@ Page {
                 // zwar eingelesen, aber nie gezeigt. Antippen klappt sie auf.
                 Label {
                     width: parent.width
-                    visible: text !== ""
-                    text: modelData.text || ""
+                    // Beim Aufklappen auch dann etwas sagen, wenn der Feed
+                    // keine Beschreibung mitliefert -- sonst sieht es aus,
+                    // als haette der Menuepunkt nicht gewirkt.
+                    visible: text !== "" && (zeile.aufgeklappt || !!modelData.text)
+                    text: modelData.text
+                          ? modelData.text
+                          : (zeile.aufgeklappt
+                                ? qsTr("Dieser Podcast liefert keine Beschreibung mit.")
+                                : "")
                     textFormat: Text.StyledText
                     wrapMode: Text.Wrap
                     maximumLineCount: zeile.aufgeklappt ? 99 : 2

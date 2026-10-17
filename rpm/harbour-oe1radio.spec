@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.7.2
+Version:    0.7.3
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -57,6 +57,16 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.7.3-1
+- "Beschreibung zeigen" klappte nicht auf. Die Spalte der Folgenzeile war
+  mittig verankert, waehrend contentHeight an eben ihrer Hoehe haengt --
+  derselbe Ringschluss wie seinerzeit beim InfoBanner. Sie haengt jetzt
+  oben, dann waechst die Zeile beim Aufklappen sauber nach.
+- Liefert ein Feed keine Beschreibung mit (die Ö1 Journale zum Beispiel
+  nicht), steht das jetzt da, statt dass der Menuepunkt wirkungslos
+  erscheint.
+- Der Pruefer meldet jetzt auch Ringschluesse ("Binding loop detected").
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.7.2-1
 - "Info zur Folge": langes Druecken auf eine Podcastfolge fuehrt auf eine
   eigene Seite mit Beschreibung, Datum, Dauer, Groesse, Bild des Podcasts
