@@ -7,7 +7,7 @@ import "../components"
 Page {
     allowedOrientations: Orientation.All
 
-    Rectangle { anchors.fill: parent; color: Farben.grund }
+    Grund {}
 
     SilicaFlickable {
         anchors.fill: parent
@@ -41,16 +41,6 @@ Page {
                     Einstellungen.farbschema = currentIndex === 0 ? "dunkel"
                                              : currentIndex === 1 ? "hell" : "ambience"
                 }
-            }
-
-            TextSwitch {
-                palette.primaryColor: Farben.schrift
-                palette.secondaryColor: Farben.schriftMatt
-                palette.highlightColor: Farben.rot
-                text: qsTr("Ö1-Rot als Akzent")
-                description: qsTr("Die Hausfarbe der Ö1-App (#b61f24). Abgeschaltet nimmt die App die Akzentfarbe der Ambience.")
-                checked: Einstellungen.oe1Rot
-                onClicked: Einstellungen.oe1Rot = checked
             }
 
             Abschnitt { text: qsTr("Wiedergabe") }
@@ -105,7 +95,7 @@ Page {
             Button {
                 palette.primaryColor: Farben.schrift
                 palette.highlightColor: Farben.rot
-                palette.highlightBackgroundColor: Farben.rot
+                palette.highlightBackgroundColor: Farben.band
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: qsTr("Aufnahmen verwalten")
                 onClicked: pageStack.push(Qt.resolvedUrl("AufnahmenPage.qml"))

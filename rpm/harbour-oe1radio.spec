@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.4.1
+Version:    0.5.0
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -57,6 +57,15 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.5.0-1
+- "Der Ambience folgen" tut das jetzt wirklich: Pulley-Menü, Baender,
+  Flaechen und Schrift geben dort zurueck, was das Theme liefert, statt
+  stur das Ö1-Rot zu tragen. Die App malt in dieser Einstellung auch
+  keinen eigenen Grund mehr -- das Hintergrundbild der Ambience bleibt
+  stehen.
+- Der Schalter "Ö1-Rot als Akzent" ist weg. Er war ueberfluessig: die
+  Entscheidung steckt schon in der Wahl des Farbschemas.
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.4.1-1
 - Im Pulley-Menü war nicht mehr zu sehen, auf welchem Eintrag der Finger
   steht: Silica legt das Band mit 30 % Deckung ueber den Grund, und ein

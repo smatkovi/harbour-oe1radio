@@ -11,7 +11,6 @@ import QtQuick 2.6
  */
 QtObject {
     property string farbschema: "ambience"
-    property bool   oe1Rot: true
     property string guete: "niedrig"
     property bool   autoplay: false
 }

@@ -10,7 +10,7 @@ Page {
     id: seite
     allowedOrientations: Orientation.All
 
-    Rectangle { anchors.fill: parent; color: Farben.grund }
+    Grund {}
 
     SilicaListView {
         anchors.fill: parent
@@ -21,13 +21,13 @@ Page {
 
         delegate: ListItem {
             // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
-            palette.highlightBackgroundColor: Farben.rot
+            palette.highlightBackgroundColor: Farben.band
             id: zeile
             contentHeight: inhalt.height + Theme.paddingMedium
 
             menu: ContextMenu {
                 backgroundColor: Farben.flaeche
-                palette.highlightBackgroundColor: Farben.rot
+                palette.highlightBackgroundColor: Farben.band
                 MenuEintrag {
                     visible: modelData.laeuft
                     text: qsTr("Abbrechen")

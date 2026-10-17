@@ -6,7 +6,7 @@ Page {
     id: seite
     allowedOrientations: Orientation.All
 
-    Rectangle { anchors.fill: parent; color: Farben.grund }
+    Grund {}
 
     property var podcasts: []
 
@@ -33,7 +33,7 @@ Page {
 
         delegate: ListItem {
             // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
-            palette.highlightBackgroundColor: Farben.rot
+            palette.highlightBackgroundColor: Farben.band
             contentHeight: zeilen.height + Theme.paddingMedium
 
             onClicked: pageStack.push(Qt.resolvedUrl("PodcastPage.qml"), {

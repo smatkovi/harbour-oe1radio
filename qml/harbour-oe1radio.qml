@@ -13,11 +13,7 @@ ApplicationWindow {
 
     // Der Grund unter allem -- sonst scheint bei Uebergaengen die Ambience
     // durch, obwohl "dunkel" eingestellt ist.
-    Rectangle {
-        anchors.fill: parent
-        z: -1000
-        color: Farben.grund
-    }
+    Grund {}
 
     // Ein Fehler des Spielers soll nicht in der Stille verschwinden.
     Rectangle {

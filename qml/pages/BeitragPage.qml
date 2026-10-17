@@ -25,7 +25,7 @@ Page {
         "https://oe1.orf.at/api/v1/app/article-view/broadcast/"
         + (beitrag.schluessel || "")
 
-    Rectangle { anchors.fill: parent; color: Farben.grund }
+    Grund {}
 
     Connections {
         target: oe1
@@ -73,7 +73,7 @@ Page {
         Button {
             palette.primaryColor: Farben.schrift
             palette.highlightColor: Farben.rot
-            palette.highlightBackgroundColor: Farben.rot
+            palette.highlightBackgroundColor: Farben.band
             width: (parent.width - Theme.paddingSmall) / 2
             enabled: !!seite.beitrag.schluessel && !!seite.beitrag.tag
             text: qsTr("Zur Sendung")
@@ -86,7 +86,7 @@ Page {
         Button {
             palette.primaryColor: Farben.schrift
             palette.highlightColor: Farben.rot
-            palette.highlightBackgroundColor: Farben.rot
+            palette.highlightBackgroundColor: Farben.band
             width: (parent.width - Theme.paddingSmall) / 2
             enabled: !!seite.beitrag.seite
             text: qsTr("Im Browser")

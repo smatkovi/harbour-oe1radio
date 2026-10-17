@@ -29,7 +29,7 @@ Page {
         }
     }
 
-    Rectangle { anchors.fill: parent; color: Farben.grund }
+    Grund {}
 
     SilicaListView {
         anchors.fill: parent
@@ -62,7 +62,7 @@ Page {
 
         delegate: ListItem {
             // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
-            palette.highlightBackgroundColor: Farben.rot
+            palette.highlightBackgroundColor: Farben.band
             contentHeight: inhalt.height + Theme.paddingMedium
             onClicked: {
                 seite.wartet = true

@@ -10,7 +10,7 @@ Page {
     id: seite
     allowedOrientations: Orientation.All
 
-    Rectangle { anchors.fill: parent; color: Farben.grund }
+    Grund {}
 
     property int podcastId: 0
     property string podcastTitel: ""
@@ -37,7 +37,7 @@ Page {
 
         delegate: ListItem {
             // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
-            palette.highlightBackgroundColor: Farben.rot
+            palette.highlightBackgroundColor: Farben.band
             id: zeile
             contentHeight: zeilen.height + Theme.paddingMedium
 
@@ -51,7 +51,7 @@ Page {
 
             menu: ContextMenu {
                 backgroundColor: Farben.flaeche
-                palette.highlightBackgroundColor: Farben.rot
+                palette.highlightBackgroundColor: Farben.band
                 MenuEintrag {
                     visible: zeile.anteil < 0
                     text: qsTr("Herunterladen")

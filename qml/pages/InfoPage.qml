@@ -17,7 +17,7 @@ Page {
     readonly property double anteil: lader.aufnahmen.length >= 0
                                      ? lader.fortschritt(kennung) : -1
 
-    Rectangle { anchors.fill: parent; color: Farben.grund }
+    Grund {}
 
     SilicaFlickable {
         anchors.fill: parent
@@ -115,7 +115,7 @@ Page {
             Button {
                 palette.primaryColor: Farben.schrift
                 palette.highlightColor: Farben.rot
-                palette.highlightBackgroundColor: Farben.rot
+                palette.highlightBackgroundColor: Farben.band
                 anchors.horizontalCenter: parent.horizontalCenter
                 visible: !!seite.sendung.adresse
                 text: qsTr("Anhören")

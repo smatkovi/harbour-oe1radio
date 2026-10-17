@@ -5,7 +5,7 @@ import "../components"
 Page {
     allowedOrientations: Orientation.All
 
-    Rectangle { anchors.fill: parent; color: Farben.grund }
+    Grund {}
 
     SilicaFlickable {
         anchors.fill: parent

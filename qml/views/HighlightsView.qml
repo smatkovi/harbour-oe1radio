@@ -36,7 +36,7 @@ Item {
 
         delegate: ListItem {
             // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
-            palette.highlightBackgroundColor: Farben.rot
+            palette.highlightBackgroundColor: Farben.band
             contentHeight: inhalt.height + Theme.paddingLarge
 
             // In der App oeffnen, nicht im Browser: die Android-App hat

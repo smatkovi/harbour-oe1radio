@@ -124,7 +124,7 @@ Item {
                 Button {
                     palette.primaryColor: Farben.schrift
                     palette.highlightColor: Farben.rot
-                    palette.highlightBackgroundColor: Farben.rot
+                    palette.highlightBackgroundColor: Farben.band
                     width: (parent.width - Theme.paddingSmall) / 2
                     text: Spieler.istLive && Spieler.spielt ? qsTr("Anhalten")
                                                             : qsTr("Live hören")
@@ -138,7 +138,7 @@ Item {
                 Button {
                     palette.primaryColor: Farben.schrift
                     palette.highlightColor: Farben.rot
-                    palette.highlightBackgroundColor: Farben.rot
+                    palette.highlightBackgroundColor: Farben.band
                     width: (parent.width - Theme.paddingSmall) / 2
                     enabled: ansicht.laufendeId > 0
                     text: qsTr("Info")

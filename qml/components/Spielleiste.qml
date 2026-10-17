@@ -147,7 +147,7 @@ Column {
             delegate: Button {
                 palette.primaryColor: Farben.schrift
                 palette.highlightColor: Farben.rot
-                palette.highlightBackgroundColor: Farben.rot
+                palette.highlightBackgroundColor: Farben.band
                 width: (parent.width - 2 * Theme.paddingSmall) / 3
                 text: qsTr("%1 min").arg(modelData)
                 onClicked: Spieler.schlafStarten(modelData)
@@ -158,7 +158,7 @@ Column {
     Button {
         palette.primaryColor: Farben.schrift
         palette.highlightColor: Farben.rot
-        palette.highlightBackgroundColor: Farben.rot
+        palette.highlightBackgroundColor: Farben.band
         x: Theme.horizontalPageMargin
         width: parent.width - 2 * Theme.horizontalPageMargin
         visible: Spieler.schlaeft

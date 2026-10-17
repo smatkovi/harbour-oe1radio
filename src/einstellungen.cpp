@@ -7,7 +7,6 @@ Einstellungen::Einstellungen(QObject *parent) : QObject(parent)
     QSettings s;
     m_farbschema = s.value(QStringLiteral("farbschema"),
                            QStringLiteral("ambience")).toString();
-    m_oe1Rot     = s.value(QStringLiteral("oe1Rot"), true).toBool();
     m_guete      = s.value(QStringLiteral("guete"),
                            QStringLiteral("niedrig")).toString();
     m_autoplay   = s.value(QStringLiteral("autoplay"), false).toBool();
@@ -22,14 +21,6 @@ void Einstellungen::setFarbschema(const QString &w)
     emit farbschemaChanged();
 }
 
-void Einstellungen::setOe1Rot(bool w)
-{
-    if (m_oe1Rot == w)
-        return;
-    m_oe1Rot = w;
-    QSettings().setValue(QStringLiteral("oe1Rot"), w);
-    emit oe1RotChanged();
-}
 
 void Einstellungen::setGuete(const QString &w)
 {

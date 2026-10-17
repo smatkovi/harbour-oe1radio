@@ -29,7 +29,7 @@ Page {
     ]
     property int gewaehlt: 0
 
-    Rectangle { anchors.fill: parent; color: Farben.grund }
+    Grund {}
 
     // --- Titelzeile --------------------------------------------------------
     // Die Android-App setzt den Titel mittig und in Grossbuchstaben.

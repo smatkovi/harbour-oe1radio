@@ -35,6 +35,7 @@ DISTFILES += \
     qml/components/Spielleiste.qml \
     qml/components/SendungsZeile.qml \
     qml/components/Farben.qml \
+    qml/components/Grund.qml \
     qml/pages/PodcastsPage.qml \
     qml/pages/PodcastPage.qml \
     qml/pages/ShellPage.qml \
