@@ -43,6 +43,10 @@ public:
     //! Die Ö1-Podcasts (die Schnittstelle liefert alle Sender auf einmal).
     Q_INVOKABLE void ladePodcasts();
 
+    //! Nur die Angaben zu einem Podcast, ohne die Folgen -- fuer die
+    //! Infoseite, die aus der Liste heraus geoeffnet wird.
+    Q_INVOKABLE void ladePodcast(int podcastId);
+
     //! Die Folgen eines Podcasts -- sie stehen nur im RSS-Feed, nicht in der
     //! JSON-Schnittstelle, siehe ladeFolgen().
     Q_INVOKABLE void ladeFolgen(int podcastId);

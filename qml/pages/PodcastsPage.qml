@@ -37,6 +37,18 @@ Page {
             contentHeight: Math.max(zeilen.height, Theme.itemSizeSmall)
                            + Theme.paddingMedium
 
+            menu: ContextMenu {
+                backgroundColor: Farben.flaeche
+                palette.highlightBackgroundColor: Farben.band
+                MenuEintrag {
+                    text: qsTr("Info")
+                    onClicked: pageStack.push(Qt.resolvedUrl("PodcastInfoPage.qml"), {
+                        podcastId: modelData.id,
+                        podcast: modelData
+                    })
+                }
+            }
+
             onClicked: pageStack.push(Qt.resolvedUrl("PodcastPage.qml"), {
                 podcastId: modelData.id,
                 podcastTitel: modelData.titel

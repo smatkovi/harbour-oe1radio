@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.6.1
+Version:    0.7.0
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -57,6 +57,16 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.7.0-1
+- Eine eigene Infoseite zum Podcast: grosses Bild, Beschreibung, Autor,
+  Faecher, Sprache, Inhaber samt Post, Rechte und Zahl der Folgen, dazu
+  die Adressen (Browser, Spotify, Feed kopieren) und ein Knopf zu den
+  Folgen. Erreichbar aus der Liste ueber das Kontextmenü und aus der
+  Folgenliste ueber das Pulley.
+- Dafuer holt ladePodcast() die Angaben eigens: aus der Liste heraus sind
+  nur Titel, Bild und Zahl der Folgen bekannt, alles Weitere steht erst in
+  der Einzelabfrage.
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.6.1-1
 - Bilder bei den Sendungen: im Tagesprogramm als quadratisches Vorschaubild
   in der Zeile, auf der Infoseite das breite Kopfbild. Bei den Sendungen ist

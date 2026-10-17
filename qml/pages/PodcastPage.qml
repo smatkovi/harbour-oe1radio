@@ -31,6 +31,13 @@ Page {
 
         Pulley {
             PulleyEintrag {
+                text: qsTr("Info zum Podcast")
+                onClicked: pageStack.push(Qt.resolvedUrl("PodcastInfoPage.qml"), {
+                    podcastId: seite.podcastId,
+                    podcast: seite.podcast
+                })
+            }
+            PulleyEintrag {
                 visible: !!seite.podcast.seite
                 text: qsTr("Im Browser öffnen")
                 onClicked: Qt.openUrlExternally(seite.podcast.seite)

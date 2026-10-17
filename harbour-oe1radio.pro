@@ -38,6 +38,7 @@ DISTFILES += \
     qml/components/Grund.qml \
     qml/pages/PodcastsPage.qml \
     qml/pages/PodcastPage.qml \
+    qml/pages/PodcastInfoPage.qml \
     qml/pages/ShellPage.qml \
     qml/pages/SpielerPage.qml \
     qml/pages/EinstellungenPage.qml \

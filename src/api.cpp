@@ -11,6 +11,7 @@
 #include <QLocale>
 #include <QUrl>
 #include <QHash>
+#include <QStringList>
 
 namespace {
 
@@ -259,6 +260,51 @@ void Api::ladePodcasts()
     });
 }
 
+//! Die Angaben zu einem Podcast aus seinem payload.
+static QVariantMap podcastAusJson(const QJsonObject &nutz)
+{
+    const QJsonObject adressen = nutz.value(QStringLiteral("urls")).toObject();
+    QVariantMap p;
+    p[QStringLiteral("titel")]   = nutz.value(QStringLiteral("title")).toString();
+    p[QStringLiteral("text")]    = nutz.value(QStringLiteral("description")).toString();
+    p[QStringLiteral("autor")]   = nutz.value(QStringLiteral("author")).toString();
+    p[QStringLiteral("rechte")]  = nutz.value(QStringLiteral("copyright")).toString();
+    p[QStringLiteral("anzahl")]  = nutz.value(QStringLiteral("episodeCount")).toInt();
+    p[QStringLiteral("bild")]    = bildAus(nutz.value(QStringLiteral("image")).toObject());
+    p[QStringLiteral("feed")]    = adressen.value(QStringLiteral("feed")).toString();
+    p[QStringLiteral("spotify")] = adressen.value(QStringLiteral("spotify")).toString();
+    p[QStringLiteral("itunes")]  = adressen.value(QStringLiteral("itunes")).toString();
+    p[QStringLiteral("seite")]   = nutz.value(QStringLiteral("link")).toObject()
+            .value(QStringLiteral("url")).toString();
+    p[QStringLiteral("sprache")] = nutz.value(QStringLiteral("language")).toString();
+    p[QStringLiteral("laufend")] = nutz.value(QStringLiteral("isOnline")).toBool();
+
+    QStringList fach;
+    for (const QJsonValue &v : nutz.value(QStringLiteral("categories")).toArray())
+        fach << v.toString();
+    p[QStringLiteral("faecher")] = fach.join(QStringLiteral(", "));
+
+    const QJsonObject inhaber = nutz.value(QStringLiteral("owner")).toObject();
+    p[QStringLiteral("inhaber")] = inhaber.value(QStringLiteral("name")).toString();
+    p[QStringLiteral("post")]    = inhaber.value(QStringLiteral("email")).toString();
+    return p;
+}
+
+void Api::ladePodcast(int podcastId)
+{
+    QNetworkReply *a = hole(QStringLiteral("%1/podcast/%2").arg(API_RTHK).arg(podcastId));
+    connect(a, &QNetworkReply::finished, this, [this, a]() {
+        a->deleteLater();
+        fertig();
+        if (a->error() != QNetworkReply::NoError) {
+            emit fehler(a->errorString());
+            return;
+        }
+        emit podcastGeladen(podcastAusJson(QJsonDocument::fromJson(a->readAll())
+                .object().value(QStringLiteral("payload")).toObject()));
+    });
+}
+
 void Api::ladeFolgen(int podcastId)
 {
     // Zwei Schritte: die JSON-Schnittstelle kennt die Folgen nicht, sie nennt
@@ -273,24 +319,10 @@ void Api::ladeFolgen(int podcastId)
         }
         const QJsonObject nutz = QJsonDocument::fromJson(a->readAll())
                 .object().value(QStringLiteral("payload")).toObject();
-        const QJsonObject adressen = nutz.value(QStringLiteral("urls")).toObject();
+        emit podcastGeladen(podcastAusJson(nutz));
 
-        // Die Beschreibung faellt hier ohnehin an -- sie gehoert auf die
-        // Seite, nicht in den Papierkorb.
-        QVariantMap p;
-        p[QStringLiteral("titel")]   = nutz.value(QStringLiteral("title")).toString();
-        p[QStringLiteral("text")]    = nutz.value(QStringLiteral("description")).toString();
-        p[QStringLiteral("autor")]   = nutz.value(QStringLiteral("author")).toString();
-        p[QStringLiteral("rechte")]  = nutz.value(QStringLiteral("copyright")).toString();
-        p[QStringLiteral("anzahl")]  = nutz.value(QStringLiteral("episodeCount")).toInt();
-        p[QStringLiteral("bild")]    = bildAus(nutz.value(QStringLiteral("image")).toObject());
-        p[QStringLiteral("feed")]    = adressen.value(QStringLiteral("feed")).toString();
-        p[QStringLiteral("spotify")] = adressen.value(QStringLiteral("spotify")).toString();
-        p[QStringLiteral("seite")]   = nutz.value(QStringLiteral("link")).toObject()
-                .value(QStringLiteral("url")).toString();
-        emit podcastGeladen(p);
-
-        const QString feed = adressen.value(QStringLiteral("feed")).toString();
+        const QString feed = nutz.value(QStringLiteral("urls")).toObject()
+                .value(QStringLiteral("feed")).toString();
         if (feed.isEmpty()) {
             emit folgenGeladen({});
             return;
