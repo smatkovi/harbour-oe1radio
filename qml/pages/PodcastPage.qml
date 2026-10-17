@@ -126,7 +126,6 @@ Page {
             id: zeile
             contentHeight: zeilen.height + 2 * Theme.paddingSmall
 
-            property bool aufgeklappt: false
             // modelData ist im Kontextmenü nicht verlaesslich sichtbar --
             // es wird in einem eigenen Kontext erzeugt. Deshalb hier
             // festhalten und im Menü diese Eigenschaft nehmen.
@@ -152,9 +151,12 @@ Page {
                     })
                 }
                 MenuEintrag {
-                    text: zeile.aufgeklappt ? qsTr("Beschreibung einklappen")
-                                            : qsTr("Beschreibung zeigen")
-                    onClicked: zeile.aufgeklappt = !zeile.aufgeklappt
+                    text: qsTr("Beschreibung zeigen")
+                    onClicked: pageStack.push(Qt.resolvedUrl("FolgePage.qml"), {
+                        folge: zeile.daten,
+                        podcastTitel: seite.podcastTitel,
+                        podcastBild: seite.podcast.bild || ""
+                    })
                 }
                 MenuEintrag {
                     visible: zeile.anteil < 0
@@ -227,20 +229,19 @@ Page {
 
                 // Die Beschreibung der Folge steht im RSS und wurde bisher
                 // zwar eingelesen, aber nie gezeigt. Antippen klappt sie auf.
+                // Nur eine Vorschau von zwei Zeilen, fest. Das Aufklappen
+                // in der Zeile hat dreimal nicht getragen: eine Listenzeile
+                // beschneidet auf contentHeight, und die Kette
+                // Label -> Column -> contentHeight schliesst sich beim
+                // Aendern nicht verlaesslich. Die ganze Beschreibung steht
+                // auf der Folgenseite.
                 Label {
                     width: parent.width
-                    // Beim Aufklappen auch dann etwas sagen, wenn der Feed
-                    // keine Beschreibung mitliefert -- sonst sieht es aus,
-                    // als haette der Menuepunkt nicht gewirkt.
-                    visible: text !== "" && (zeile.aufgeklappt || !!modelData.text)
-                    text: modelData.text
-                          ? modelData.text
-                          : (zeile.aufgeklappt
-                                ? qsTr("Dieser Podcast liefert keine Beschreibung mit.")
-                                : "")
+                    visible: text !== ""
+                    text: modelData.text || ""
                     textFormat: Text.StyledText
                     wrapMode: Text.Wrap
-                    maximumLineCount: zeile.aufgeklappt ? 99 : 2
+                    maximumLineCount: 2
                     elide: Text.ElideRight
                     font.pixelSize: Theme.fontSizeTiny
                     color: Farben.schriftMatt

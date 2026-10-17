@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.7.3
+Version:    0.7.4
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -57,6 +57,16 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.7.4-1
+- "Beschreibung zeigen" oeffnet jetzt die Folgenseite, statt die Zeile
+  aufzuklappen. Das Aufklappen in der Zeile hat dreimal nicht getragen:
+  eine Listenzeile beschneidet ihren Inhalt auf contentHeight, und die
+  Kette Label -> Column -> contentHeight schliesst sich beim Aendern
+  nicht verlaesslich. Nachgemessen: der Text waechst (60 auf 480 Pixel),
+  die Spalte bleibt stehen. Auf der Folgenseite steht die Beschreibung
+  ohnehin ganz und ohne Beschneidung.
+- In der Zeile bleibt eine feste Vorschau von zwei Zeilen.
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.7.3-1
 - "Beschreibung zeigen" klappte nicht auf. Die Spalte der Folgenzeile war
   mittig verankert, waehrend contentHeight an eben ihrer Hoehe haengt --
