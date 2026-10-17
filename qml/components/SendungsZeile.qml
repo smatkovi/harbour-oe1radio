@@ -75,22 +75,22 @@ ListItem {
             text: qsTr("Info")
             onClicked: zeile.anstossen("info")
         }
-        MenuItem {
+        MenuEintrag {
             visible: zeile.abrufbar && zeile.anteil < 0
             text: qsTr("Herunterladen")
             onClicked: zeile.anstossen("laden")
         }
-        MenuItem {
+        MenuEintrag {
             visible: zeile.anteil >= 0 && zeile.anteil < 1
             text: qsTr("Abbruch")
             onClicked: lader.abbrechen(zeile.kennung)
         }
-        MenuItem {
+        MenuEintrag {
             visible: zeile.anteil === 1
             text: qsTr("Aufnahme löschen")
             onClicked: lader.loeschen(zeile.kennung)
         }
-        MenuItem {
+        MenuEintrag {
             text: merker.gemerkt(zeile.kennung) ? qsTr("Nicht mehr merken")
                                                 : qsTr("Als Favorit merken")
             onClicked: merker.umschalten(zeile.kennung, {

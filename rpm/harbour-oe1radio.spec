@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.7.1
+Version:    0.7.2
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -57,6 +57,21 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.7.2-1
+- "Info zur Folge": langes Druecken auf eine Podcastfolge fuehrt auf eine
+  eigene Seite mit Beschreibung, Datum, Dauer, Groesse, Bild des Podcasts
+  und allem, was man mit der Folge tun kann.
+- Der RSS-Leser nimmt jetzt auch Dauer, Seitenadresse, guid und Groesse
+  mit. Dabei faellt auf: itunes:title traegt denselben oertlichen Namen
+  wie title, die Felder des Feeds stehen aber in *keinem* Namensraum und
+  die von itunes in einem eigenen -- danach wird jetzt unterschieden.
+  Die Dauer steht auch in der Folgenliste.
+- Vier Eintraege im Menü einer Folge und je einer bei den Aufnahmen und
+  im Tagesprogramm waren noch nackte MenuItem und trugen damit die Farben
+  der Ambience statt die des Schemas. tools/qml-pruefen.sh meldet das
+  jetzt -- mir ist dieselbe Stelle zweimal durchgerutscht, weil ein
+  Suchausdruck am ersten schliessenden Klammerpaar endete.
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.7.1-1
 - Langes Druecken auf einen Podcast zeigte nichts: modelData ist im
   Kontextmenü nicht verlaesslich sichtbar, es wird in einem eigenen

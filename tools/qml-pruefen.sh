@@ -33,6 +33,29 @@ for f in qml/harbour-oe1radio.qml qml/cover/*.qml qml/pages/*.qml; do
     fi
 done
 
+# Nackte MenuItem in Pulley- und Kontextmenues: die tragen dann die Farben
+# der Ambience statt die des Schemas. Zweimal uebersehen, weil ein
+# Suchausdruck am ersten schliessenden Klammerpaar endete.
+for f in $(find qml -name '*.qml'); do
+    NACKT=$(python3 - "$f" <<'PYEOF'
+import re, sys
+s = open(sys.argv[1], encoding='utf-8').read()
+n = 0
+for m in re.finditer(r'(Pulley|ContextMenu) \{', s):
+    tiefe, i = 0, m.end() - 1
+    while i < len(s):
+        if s[i] == '{': tiefe += 1
+        elif s[i] == '}':
+            tiefe -= 1
+            if tiefe == 0: break
+        i += 1
+    n += len(re.findall(r'\bMenuItem \{', s[m.end():i]))
+print(n)
+PYEOF
+)
+    [ "$NACKT" = "0" ] || { echo "=== $f: $NACKT nacktes MenuItem im Menü (Farben!)"; FEHLER=1; }
+done
+
 # Das Singleton eigens: ein fehlendes qmldir oder ein vergessenes
 # import "." faellt oben nicht auf, der Fehler kaeme erst zur Laufzeit.
 AUS=$(QT_LOGGING_TO_CONSOLE=1 QT_QPA_PLATFORM=minimal qmlscene -I tests/attrappen --quit tests/singleton-probe.qml 2>&1)

@@ -33,7 +33,7 @@ Page {
                     text: qsTr("Abbrechen")
                     onClicked: lader.abbrechen(zeile.daten.kennung)
                 }
-                MenuItem {
+                MenuEintrag {
                     visible: !zeile.daten.laeuft
                     text: qsTr("Löschen")
                     onClicked: zeile.remorseAction(qsTr("Löschen"), function() {

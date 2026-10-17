@@ -144,22 +144,36 @@ Page {
                 backgroundColor: Farben.flaeche
                 palette.highlightBackgroundColor: Farben.band
                 MenuEintrag {
+                    text: qsTr("Info zur Folge")
+                    onClicked: pageStack.push(Qt.resolvedUrl("FolgePage.qml"), {
+                        folge: zeile.daten,
+                        podcastTitel: seite.podcastTitel,
+                        podcastBild: seite.podcast.bild || ""
+                    })
+                }
+                MenuEintrag {
+                    visible: !!zeile.daten.text
+                    text: zeile.aufgeklappt ? qsTr("Beschreibung einklappen")
+                                            : qsTr("Beschreibung zeigen")
+                    onClicked: zeile.aufgeklappt = !zeile.aufgeklappt
+                }
+                MenuEintrag {
                     visible: zeile.anteil < 0
                     text: qsTr("Herunterladen")
                     onClicked: lader.hole(zeile.kennung, zeile.daten.titel,
                                           zeile.daten.adresse)
                 }
-                MenuItem {
+                MenuEintrag {
                     visible: zeile.anteil >= 0 && zeile.anteil < 1
                     text: qsTr("Abbruch")
                     onClicked: lader.abbrechen(zeile.kennung)
                 }
-                MenuItem {
+                MenuEintrag {
                     visible: zeile.anteil === 1
                     text: qsTr("Aufnahme löschen")
                     onClicked: lader.loeschen(zeile.kennung)
                 }
-                MenuItem {
+                MenuEintrag {
                     text: merker.gemerkt(zeile.kennung) ? qsTr("Nicht mehr merken")
                                                         : qsTr("Als Favorit merken")
                     onClicked: merker.umschalten(zeile.kennung, {
@@ -199,6 +213,8 @@ Page {
                 Label {
                     width: parent.width
                     text: modelData.datum
+                          + (modelData.dauer > 0
+                                ? "  ·  " + Math.round(modelData.dauer / 60) + " min" : "")
                           + (zeile.anteil >= 0 && zeile.anteil < 1
                                 ? "   " + Math.round(zeile.anteil * 100) + " %"
                              : zeile.anteil === 1 ? "   ↓" : "")

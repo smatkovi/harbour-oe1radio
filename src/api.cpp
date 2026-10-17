@@ -344,23 +344,45 @@ void Api::ladeFolgen(int podcastId)
                 x.readNext();
                 if (x.isStartElement()) {
                     const QStringRef n = x.name();
+                    // itunes:title traegt denselben oertlichen Namen wie
+                    // title -- die Felder des Feeds stehen in *keinem*
+                    // Namensraum, die von itunes in einem eigenen.
+                    const bool rss = x.namespaceUri().isEmpty();
                     if (n == QLatin1String("item")) {
                         imItem = true;
                         jetzt.clear();
-                    } else if (imItem && n == QLatin1String("title")) {
+                    } else if (imItem && rss && n == QLatin1String("title")) {
                         jetzt[QStringLiteral("titel")] = x.readElementText();
                     } else if (imItem && n == QLatin1String("pubDate")) {
                         const QString roh = x.readElementText();
                         const QDateTime d = QDateTime::fromString(roh, Qt::RFC2822Date);
                         jetzt[QStringLiteral("datum")] = d.isValid()
-                                ? d.toLocalTime().toString(QStringLiteral("dd.MM.yyyy"))
+                                ? d.toLocalTime().toString(QStringLiteral("dd.MM.yyyy HH:mm"))
                                 : roh;
-                    } else if (imItem && n == QLatin1String("description")) {
+                    } else if (imItem && rss && n == QLatin1String("description")) {
                         jetzt[QStringLiteral("text")] = x.readElementText();
+                    } else if (imItem && rss && n == QLatin1String("link")) {
+                        jetzt[QStringLiteral("seite")] = x.readElementText();
+                    } else if (imItem && rss && n == QLatin1String("guid")) {
+                        jetzt[QStringLiteral("guid")] = x.readElementText();
+                    } else if (imItem && !rss && n == QLatin1String("duration")) {
+                        // itunes:duration -- je nach Feed Sekunden oder hh:mm:ss.
+                        const QString roh = x.readElementText().trimmed();
+                        int sek = 0;
+                        if (roh.contains(QLatin1Char(':'))) {
+                            for (const QString &teil : roh.split(QLatin1Char(':')))
+                                sek = sek * 60 + teil.toInt();
+                        } else {
+                            sek = roh.toInt();
+                        }
+                        jetzt[QStringLiteral("dauer")] = sek;
                     } else if (imItem && n == QLatin1String("enclosure")) {
                         // Hier steht die eigentliche Tondatei.
+                        const QXmlStreamAttributes a = x.attributes();
                         jetzt[QStringLiteral("adresse")] =
-                                x.attributes().value(QStringLiteral("url")).toString();
+                                a.value(QStringLiteral("url")).toString();
+                        jetzt[QStringLiteral("groesse")] =
+                                a.value(QStringLiteral("length")).toString().toLongLong();
                     }
                 } else if (x.isEndElement() && x.name() == QLatin1String("item")) {
                     imItem = false;
