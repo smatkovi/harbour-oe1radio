@@ -13,6 +13,9 @@ import "."
 ListItem {
     id: zeile
 
+    // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
+    palette.highlightBackgroundColor: Farben.rot
+
     property var sendung
     readonly property bool abrufbar: sendung && sendung.abrufbar
     readonly property bool laeuft: sendung && sendung.laeuftJetzt
@@ -64,6 +67,9 @@ ListItem {
 
     menu: ContextMenu {
         backgroundColor: Farben.flaeche
+        // Dasselbe wie beim Pulley: das Band unter dem Finger liegt mit
+        // 30 % ueber dem Grund und muss sich davon abheben.
+        palette.highlightBackgroundColor: Farben.rot
         MenuEintrag {
             text: qsTr("Info")
             onClicked: zeile.anstossen("info")

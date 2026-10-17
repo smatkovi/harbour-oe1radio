@@ -36,6 +36,8 @@ Page {
         }
 
         delegate: ListItem {
+            // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
+            palette.highlightBackgroundColor: Farben.rot
             id: zeile
             contentHeight: zeilen.height + Theme.paddingMedium
 
@@ -49,6 +51,7 @@ Page {
 
             menu: ContextMenu {
                 backgroundColor: Farben.flaeche
+                palette.highlightBackgroundColor: Farben.rot
                 MenuEintrag {
                     visible: zeile.anteil < 0
                     text: qsTr("Herunterladen")

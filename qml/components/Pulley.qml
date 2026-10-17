@@ -15,5 +15,9 @@ import "."
  */
 PullDownMenu {
     backgroundColor: Farben.oe1Rot
-    highlightColor: Farben.rotDunkel
+    // Das Band unter dem gewaehlten Eintrag wird mit dieser Farbe bei
+    // 30 % Deckung ueber den Grund gelegt. Ein *dunkles* Rot verschwindet
+    // darin spurlos -- es muss heller sein als der Grund, damit man
+    // ueberhaupt sieht, worauf der Finger steht.
+    highlightColor: "#ffffff"
 }

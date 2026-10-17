@@ -32,6 +32,8 @@ Page {
         }
 
         delegate: ListItem {
+            // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
+            palette.highlightBackgroundColor: Farben.rot
             contentHeight: zeilen.height + Theme.paddingMedium
 
             onClicked: pageStack.push(Qt.resolvedUrl("PodcastPage.qml"), {

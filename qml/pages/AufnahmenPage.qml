@@ -20,11 +20,14 @@ Page {
         }
 
         delegate: ListItem {
+            // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
+            palette.highlightBackgroundColor: Farben.rot
             id: zeile
             contentHeight: inhalt.height + Theme.paddingMedium
 
             menu: ContextMenu {
                 backgroundColor: Farben.flaeche
+                palette.highlightBackgroundColor: Farben.rot
                 MenuEintrag {
                     visible: modelData.laeuft
                     text: qsTr("Abbrechen")

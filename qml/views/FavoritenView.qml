@@ -29,6 +29,8 @@ Item {
         model: merker.eintraege
 
         delegate: ListItem {
+            // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
+            palette.highlightBackgroundColor: Farben.rot
             id: zeile
             contentHeight: inhalt.height + Theme.paddingMedium
 
@@ -39,6 +41,7 @@ Item {
 
             menu: ContextMenu {
                 backgroundColor: Farben.flaeche
+                palette.highlightBackgroundColor: Farben.rot
                 MenuEintrag { text: qsTr("Entfernen"); onClicked: zeile.entfernen() }
             }
 

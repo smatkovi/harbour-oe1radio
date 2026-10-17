@@ -74,6 +74,8 @@ Item {
                             Repeater {
                                 model: journal.stuecke
                                 delegate: ListItem {
+                                    // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
+                                    palette.highlightBackgroundColor: Farben.rot
                                     width: spalte.width
                                     contentHeight: zeile.height + Theme.paddingSmall
 

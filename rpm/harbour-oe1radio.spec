@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.4.0
+Version:    0.4.1
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -57,6 +57,15 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.4.1-1
+- Im Pulley-Menü war nicht mehr zu sehen, auf welchem Eintrag der Finger
+  steht: Silica legt das Band mit 30 % Deckung ueber den Grund, und ein
+  dunkles Rot ueber dem roten Grund verschwindet darin (#92191d gegen
+  #b61f24). Das Band ist jetzt weiss, also #cc6266 ueber dem Grund.
+  Kontextmenues bekommen aus demselben Grund ein rotes Band, und auch die
+  Listenzeilen heben sich beim Antippen jetzt in Ö1-Rot hervor statt in
+  der Farbe der Ambience.
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.4.0-1
 - Das Farbschema greift jetzt wirklich ueberall, auch im Pulley-Menü, in
   Kontextmenues, Knoepfen, Schaltern und Auswahlfeldern. Silica vererbt

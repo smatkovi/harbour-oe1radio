@@ -32,6 +32,8 @@ Page {
                     { name: qsTr("Über"),          ziel: "AboutPage.qml" }
                 ]
                 delegate: ListItem {
+                    // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
+                    palette.highlightBackgroundColor: Farben.rot
                     width: spalte.width
                     onClicked: pageStack.push(Qt.resolvedUrl(modelData.ziel))
                     Label {
