@@ -45,6 +45,15 @@ QtObject {
     //! Das Band unter dem Finger (Pulley, Kontextmenü, Listenzeile).
     readonly property color band: eigen ? oe1Rot : Theme.highlightBackgroundColor
 
+    //! Die untere Reiterleiste. In der Android-App ist sie das
+    //! auffaelligste Stueck Hausfarbe; bei "ambience" nimmt sie deren
+    //! Hervorhebungsfarbe, damit sie sich nicht herausnimmt.
+    readonly property color leiste: eigen ? oe1Rot : Theme.highlightBackgroundColor
+    //! Der gewaehlte Reiter.
+    readonly property color leisteAktiv: eigen ? "#ffffff" : Theme.primaryColor
+    //! Die nicht gewaehlten -- in der Android-App #e7a9a7.
+    readonly property color leisteMatt: eigen ? "#e7a9a7" : Theme.secondaryColor
+
     //! Der Grund. Bei "ambience" malt die App gar keinen, siehe Grund.qml.
     readonly property color grund: dunkel ? "#000000" : "#ffffff"
 

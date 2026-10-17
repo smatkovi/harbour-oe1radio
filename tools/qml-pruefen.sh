@@ -14,7 +14,7 @@
 #    werden unten ausgefiltert, sonst gehen die echten darin unter.
 cd "$(dirname "$0")/.."
 FEHLER=0
-MUSTER="is not a type|Expected token|Unexpected token|Syntax error|Cannot assign|is not installed|No such file|has no qmldir|ReferenceError"
+MUSTER="is not a type|Expected token|Unexpected token|Syntax error|Cannot assign|Unable to assign|is not installed|No such file|has no qmldir|ReferenceError"
 # Erwartbar, wenn eine Seite ohne die App geladen wird:
 # Die Kontext-Eigenschaften (oe1, lader, merker) und die Signale darauf gibt
 # es nur in der laufenden App; einzeln geladen fehlen sie zwangslaeufig.

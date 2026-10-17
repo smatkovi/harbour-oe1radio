@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.5.0
+Version:    0.5.1
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -57,6 +57,19 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.5.1-1
+- Die untere Leiste hatte ihre Farbe verloren: beim Umbau in 0.5.0 sind
+  Farben.leiste und leisteMatt verschwunden, und eine fehlende Eigenschaft
+  gibt in QML stillschweigend undefined. Sie sind wieder da und folgen nun
+  ebenfalls dem Farbschema -- bei "ambience" nimmt die Leiste deren
+  Hervorhebungsfarbe statt stur das Ö1-Rot.
+- tools/qml-pruefen.sh achtet jetzt auch auf "Unable to assign": genau das
+  meldet Qt bei einer entfernten Eigenschaft, und genau das hat der
+  Pruefer bisher durchgelassen. Er fand damit sofort einen zweiten Fall --
+  "undefined && ..." ergibt undefined und laesst sich keinem bool
+  zuweisen (InfoPage) -- und drei Pulley-Eintraege, die beim Umbau nicht
+  mitumbenannt worden waren und deshalb die falschen Farben trugen.
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.5.0-1
 - "Der Ambience folgen" tut das jetzt wirklich: Pulley-Menü, Baender,
   Flaechen und Schrift geben dort zurueck, was das Theme liefert, statt

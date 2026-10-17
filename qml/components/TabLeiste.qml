@@ -49,8 +49,9 @@ Rectangle {
 
                     Image {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        source: "image://theme/" + modelData.symbol
-                               + "?" + (parent.parent.aktiv ? "#ffffff" : "#e7a9a7")
+                        source: "image://theme/" + modelData.symbol + "?"
+                               + (parent.parent.aktiv ? Farben.leisteAktiv
+                                                      : Farben.leisteMatt)
                         width: Theme.iconSizeSmall
                         height: width
                         fillMode: Image.PreserveAspectFit
@@ -62,7 +63,7 @@ Rectangle {
                         visible: parent.parent.aktiv
                         text: modelData.name
                         font.pixelSize: Theme.fontSizeTiny
-                        color: "#ffffff"
+                        color: Farben.leisteAktiv
                     }
                 }
             }

@@ -33,18 +33,18 @@ Page {
                     id: seite.sendung.id
                 })
             }
-            MenuItem {
-                visible: seite.sendung.adresse && seite.anteil < 0
+            PulleyEintrag {
+                visible: !!seite.sendung.adresse && seite.anteil < 0
                 text: qsTr("Herunterladen")
                 onClicked: lader.hole(seite.kennung, seite.sendung.titel,
                                       seite.sendung.adresse)
             }
-            MenuItem {
+            PulleyEintrag {
                 visible: seite.anteil >= 0 && seite.anteil < 1
                 text: qsTr("Abbrechen")
                 onClicked: lader.abbrechen(seite.kennung)
             }
-            MenuItem {
+            PulleyEintrag {
                 visible: seite.anteil === 1
                 text: qsTr("Aufnahme löschen")
                 onClicked: lader.loeschen(seite.kennung)
