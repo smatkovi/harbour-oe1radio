@@ -110,6 +110,14 @@ ListItem {
             Spieler.spieleLive()
     }
 
+    Rectangle {
+        anchors { left: parent.left; bottom: parent.bottom }
+        height: Theme.paddingSmall / 2
+        width: parent.width * (zeile.anteil > 0 ? zeile.anteil : 0)
+        visible: zeile.anteil >= 0 && zeile.anteil < 1
+        color: Farben.rot
+    }
+
     Row {
         id: inhalt
         anchors {
@@ -151,10 +159,15 @@ ListItem {
             }
         }
 
+        // Waehrend des Abrufs der Anteil in Prozent, danach das Zeichen.
+        // Vorher stand hier bis zum Schluss nichts, und ein Abruf von einer
+        // halben Minute sah aus wie ein toter Menuepunkt.
         Label {
             id: marke
             anchors.verticalCenter: parent.verticalCenter
-            text: zeile.dieseSpielt && Spieler.spielt ? "▮▮"
+            text: zeile.anteil >= 0 && zeile.anteil < 1
+                    ? Math.round(zeile.anteil * 100) + " %"
+                : zeile.dieseSpielt && Spieler.spielt ? "▮▮"
                 : zeile.laeuft ? qsTr("live")
                 : zeile.anteil === 1 ? "↓" : ""
             font.pixelSize: Theme.fontSizeExtraSmall

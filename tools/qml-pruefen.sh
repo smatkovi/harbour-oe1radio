@@ -22,7 +22,7 @@ MUSTER="is not a type|Expected token|Unexpected token|Syntax error|Cannot assign
 # main.cpp an. Fuer den Pruefer liegt in tests/attrappen eine Attrappe --
 # ohne sie scheitert schon der Verzeichnis-Import von "components", und
 # der Pruefer verlaere seine eigentliche Aufgabe.
-RAUSCHEN="__silica_applicationwindow_instance|ReferenceError: (oe1|lader|merker|Einstellungen|appVersion) |Cannot assign to non-existent property \"on(TagGeladen|SendungGeladen|PodcastsGeladen|FolgenGeladen|BeitraegeGeladen|JournaleGeladen|SucheFertig|AufnahmenChanged|EintraegeChanged)\""
+RAUSCHEN="__silica_applicationwindow_instance|ReferenceError: (oe1|lader|merker|Einstellungen|appVersion) |Cannot assign to non-existent property \"on(TagGeladen|SendungGeladen|PodcastsGeladen|FolgenGeladen|BeitraegeGeladen|JournaleGeladen|SucheFertig|AufnahmenChanged|EintraegeChanged|Fehler|Fertig)\""
 
 for f in qml/harbour-oe1radio.qml qml/cover/*.qml qml/pages/*.qml; do
     [ -f "$f" ] || continue

@@ -68,6 +68,7 @@ private:
     QString ordner() const;
     QString pfadFuer(const QString &kennung, const QString &titel) const;
     void einlesen();
+    void sichern();
 
     QNetworkAccessManager *m_netz;
     QHash<QString, Lauf> m_laufend;

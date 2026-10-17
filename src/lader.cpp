@@ -9,6 +9,8 @@
 #include <QFileInfo>
 #include <QStandardPaths>
 #include <QSettings>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QUrl>
 
 Lader::Lader(QObject *parent)
@@ -53,17 +55,31 @@ QString Lader::pfadFuer(const QString &kennung, const QString &titel) const
 
 void Lader::einlesen()
 {
-    // Was schon auf der Platte liegt, steht in einer kleinen Liste daneben --
-    // so bleibt die Zuordnung Kennung -> Datei auch ueber Neustarts erhalten.
+    // Was schon auf der Platte liegt, merkt sich die App als **ein**
+    // JSON-Feld. Die Kennung taugt naemlich nicht als QSettings-Schluessel:
+    // dort ist "/" ein Gruppentrenner, und die Kennung einer Podcastfolge
+    // ist ihre Adresse -- die zerfiele in ein Dutzend Untergruppen und
+    // waere nach einem Neustart nicht wiederzufinden.
     m_fertig.clear();
-    QSettings s;
-    s.beginGroup(QStringLiteral("aufnahmen"));
-    for (const QString &k : s.childKeys()) {
-        const QString pfad = s.value(k).toString();
+    const QByteArray roh = QSettings().value(QStringLiteral("aufnahmen"))
+            .toByteArray();
+    if (roh.isEmpty())
+        return;
+    const QJsonObject o = QJsonDocument::fromJson(roh).object();
+    for (auto it = o.constBegin(); it != o.constEnd(); ++it) {
+        const QString pfad = it.value().toString();
         if (QFile::exists(pfad))
-            m_fertig.insert(k, pfad);
+            m_fertig.insert(it.key(), pfad);
     }
-    s.endGroup();
+}
+
+void Lader::sichern()
+{
+    QJsonObject o;
+    for (auto it = m_fertig.constBegin(); it != m_fertig.constEnd(); ++it)
+        o.insert(it.key(), it.value());
+    QSettings().setValue(QStringLiteral("aufnahmen"),
+                         QJsonDocument(o).toJson(QJsonDocument::Compact));
 }
 
 QVariantList Lader::aufnahmen() const
@@ -167,10 +183,7 @@ void Lader::hole(const QString &kennung, const QString &titel, const QString &ad
 
         if (gut) {
             m_fertig.insert(kennung, pfad);
-            QSettings s;
-            s.beginGroup(QStringLiteral("aufnahmen"));
-            s.setValue(kennung, pfad);
-            s.endGroup();
+            sichern();
             emit fertig(kennung, pfad);
         } else {
             emit fehler(kennung, meldung);
@@ -195,9 +208,6 @@ void Lader::loeschen(const QString &kennung)
         return;
     QFile::remove(pfad);
     m_fertig.remove(kennung);
-    QSettings s;
-    s.beginGroup(QStringLiteral("aufnahmen"));
-    s.remove(kennung);
-    s.endGroup();
+    sichern();
     emit aufnahmenChanged();
 }

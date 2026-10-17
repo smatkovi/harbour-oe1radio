@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.5.1
+Version:    0.5.2
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -57,6 +57,18 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.5.2-1
+- Herunterladen sah aus, als taete es nichts: in der Zeile stand bis zum
+  Schluss gar nichts, und erst am Ende erschien das Zeichen. Jetzt zeigt
+  sie waehrenddessen den Anteil in Prozent und einen duennen Balken am
+  unteren Rand.
+- Der Lader meldete bisher ins Leere -- weder ein gescheiterter noch ein
+  geglueckter Abruf war zu sehen. Beides steht jetzt im Band unten.
+- Podcastfolgen wurden nach einem Neustart nicht wiedergefunden: ihre
+  Kennung ist die Adresse, und in einem QSettings-Schluessel ist "/" ein
+  Gruppentrenner. Das Verzeichnis der Aufnahmen steht deshalb jetzt als
+  JSON in einem einzigen Feld.
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.5.1-1
 - Die untere Leiste hatte ihre Farbe verloren: beim Umbau in 0.5.0 sind
   Farben.leiste und leisteMatt verschwunden, und eine fehlende Eigenschaft
