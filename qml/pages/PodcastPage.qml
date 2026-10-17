@@ -98,6 +98,7 @@ Page {
                     color: Farben.schriftMatt
 
                     property bool aufgeklappt: false
+
                     MouseArea {
                         anchors.fill: parent
                         onClicked: beschreibung.aufgeklappt = !beschreibung.aufgeklappt
@@ -126,6 +127,11 @@ Page {
             contentHeight: zeilen.height + Theme.paddingMedium
 
             property bool aufgeklappt: false
+            // modelData ist im Kontextmenü nicht verlaesslich sichtbar --
+            // es wird in einem eigenen Kontext erzeugt. Deshalb hier
+            // festhalten und im Menü diese Eigenschaft nehmen.
+            property var daten: modelData
+
             readonly property bool dieseSpielt:
                 Spieler.hatQuelle && Spieler.titel === modelData.titel
             // Die Folgenadresse ist die Kennung -- zwei Folgen koennen
@@ -140,8 +146,8 @@ Page {
                 MenuEintrag {
                     visible: zeile.anteil < 0
                     text: qsTr("Herunterladen")
-                    onClicked: lader.hole(zeile.kennung, modelData.titel,
-                                          modelData.adresse)
+                    onClicked: lader.hole(zeile.kennung, zeile.daten.titel,
+                                          zeile.daten.adresse)
                 }
                 MenuItem {
                     visible: zeile.anteil >= 0 && zeile.anteil < 1
@@ -157,10 +163,10 @@ Page {
                     text: merker.gemerkt(zeile.kennung) ? qsTr("Nicht mehr merken")
                                                         : qsTr("Als Favorit merken")
                     onClicked: merker.umschalten(zeile.kennung, {
-                        titel: modelData.titel,
-                        untertitel: modelData.datum || "",
+                        titel: zeile.daten.titel,
+                        untertitel: zeile.daten.datum || "",
                         art: "folge",
-                        adresse: modelData.adresse
+                        adresse: zeile.daten.adresse
                     })
                 }
             }

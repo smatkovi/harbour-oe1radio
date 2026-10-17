@@ -63,7 +63,9 @@ Item {
                     clip: true
                     asynchronous: true
                     source: modelData.bild || ""
-                    visible: source != ""
+                    // Erst zeigen, wenn es wirklich da ist -- sonst steht
+                    // ein leerer Rahmen in der Zeile.
+                    visible: source != "" && status === Image.Ready
                 }
 
                 Column {

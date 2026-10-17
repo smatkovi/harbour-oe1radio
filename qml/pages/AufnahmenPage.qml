@@ -29,15 +29,15 @@ Page {
                 backgroundColor: Farben.flaeche
                 palette.highlightBackgroundColor: Farben.band
                 MenuEintrag {
-                    visible: modelData.laeuft
+                    visible: zeile.daten.laeuft
                     text: qsTr("Abbrechen")
-                    onClicked: lader.abbrechen(modelData.kennung)
+                    onClicked: lader.abbrechen(zeile.daten.kennung)
                 }
                 MenuItem {
-                    visible: !modelData.laeuft
+                    visible: !zeile.daten.laeuft
                     text: qsTr("Löschen")
                     onClicked: zeile.remorseAction(qsTr("Löschen"), function() {
-                        lader.loeschen(modelData.kennung)
+                        lader.loeschen(zeile.daten.kennung)
                     })
                 }
             }
@@ -70,7 +70,7 @@ Page {
                     palette.secondaryColor: Farben.schriftMatt
                     palette.highlightColor: Farben.rot
                     width: parent.width
-                    visible: modelData.laeuft
+                    visible: zeile.daten.laeuft
                     minimumValue: 0
                     maximumValue: 1
                     value: modelData.anteil
@@ -78,7 +78,7 @@ Page {
                 }
                 Label {
                     width: parent.width
-                    visible: !modelData.laeuft
+                    visible: !zeile.daten.laeuft
                     text: (modelData.groesse / 1048576).toFixed(1) + " MB"
                     font.pixelSize: Theme.fontSizeExtraSmall
                     color: Farben.schriftMatt

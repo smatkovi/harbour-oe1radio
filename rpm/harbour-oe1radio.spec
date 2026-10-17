@@ -1,6 +1,6 @@
 Name:       harbour-oe1radio
 Summary:    Ö1 Radio
-Version:    0.7.0
+Version:    0.7.1
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+
@@ -57,6 +57,18 @@ desktop-file-install --delete-original \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 
 %changelog
+* Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.7.1-1
+- Langes Druecken auf einen Podcast zeigte nichts: modelData ist im
+  Kontextmenü nicht verlaesslich sichtbar, es wird in einem eigenen
+  Kontext erzeugt. Das Menü ging auf, der Eintrag tat nur nichts. Die
+  Zeilen halten ihre Daten jetzt in einer eigenen Eigenschaft fest --
+  dieselbe Falle steckte auch in den Menues der Aufnahmen, der
+  Podcastfolgen und der Favoriten.
+- Bilder bei den Journalen: der Feed kennt keine, deshalb werden die Tage
+  des Journals nachgeladen und ueber den Programmschluessel zugeordnet.
+- Highlights hatten ihre Bilder schon; sie erscheinen jetzt erst, wenn
+  sie geladen sind, statt als leerer Rahmen.
+
 * Sat Oct 17 2026 smatkovi <sebastian.matkovich@gmail.com> 0.7.0-1
 - Eine eigene Infoseite zum Podcast: grosses Bild, Beschreibung, Autor,
   Faecher, Sprache, Inhaber samt Post, Rechte und Zahl der Folgen, dazu

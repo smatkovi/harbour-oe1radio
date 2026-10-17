@@ -32,8 +32,14 @@ Page {
         }
 
         delegate: ListItem {
+            id: zeile
             // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
             palette.highlightBackgroundColor: Farben.band
+
+            // modelData ist im Kontextmenü nicht verlaesslich sichtbar --
+            // es wird in einem eigenen Kontext erzeugt. Deshalb hier
+            // festhalten und im Menü diese Eigenschaft nehmen.
+            property var daten: modelData
             contentHeight: Math.max(zeilen.height, Theme.itemSizeSmall)
                            + Theme.paddingMedium
 
@@ -43,8 +49,8 @@ Page {
                 MenuEintrag {
                     text: qsTr("Info")
                     onClicked: pageStack.push(Qt.resolvedUrl("PodcastInfoPage.qml"), {
-                        podcastId: modelData.id,
-                        podcast: modelData
+                        podcastId: zeile.daten.id,
+                        podcast: zeile.daten
                     })
                 }
             }

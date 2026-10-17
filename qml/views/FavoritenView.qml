@@ -36,7 +36,7 @@ Item {
 
             function entfernen() {
                 remorseAction(qsTr("Entfernen"),
-                              function() { merker.vergessen(modelData.kennung) })
+                              function() { merker.vergessen(zeile.daten.kennung) })
             }
 
             menu: ContextMenu {

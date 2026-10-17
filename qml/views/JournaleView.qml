@@ -13,11 +13,33 @@ Item {
     property var tage: []
     property bool wartet: false
 
+    //! Programmschluessel -> Bild, aus dem Tagesprogramm nachgeschlagen.
+    property var bilder: ({})
+
     Component.onCompleted: oe1.ladeJournale()
 
     Connections {
         target: oe1
-        onJournaleGeladen: ansicht.tage = tage
+        onJournaleGeladen: {
+            ansicht.tage = tage
+            // Der Feed kennt keine Bilder. Die stehen im Tagesprogramm,
+            // und der Programmschluessel verbindet beides -- also die
+            // betroffenen Tage nachladen und zuordnen.
+            for (var i = 0; i < tage.length; i++)
+                if (tage[i].tag)
+                    oe1.ladeTag(tage[i].tag)
+        }
+        onTagGeladen: {
+            var neu = ansicht.bilder
+            for (var i = 0; i < sendungen.length; i++) {
+                var s = sendungen[i]
+                if (s.schluessel && s.bild)
+                    neu[s.schluessel] = s.bild
+            }
+            // Neu zuweisen, sonst merkt die Bindung die Aenderung nicht.
+            ansicht.bilder = {}
+            ansicht.bilder = neu
+        }
         onSendungGeladen: {
             if (ansicht.wartet) {
                 ansicht.wartet = false
@@ -77,7 +99,8 @@ Item {
                                     // Das Band beim Antippen in Ö1-Rot statt in der Ambience-Farbe.
                                     palette.highlightBackgroundColor: Farben.band
                                     width: spalte.width
-                                    contentHeight: zeile.height + Theme.paddingSmall
+                                    contentHeight: Math.max(zeile.height, Theme.itemSizeExtraSmall)
+                                                   + Theme.paddingSmall
 
                                     onClicked: {
                                         if (modelData.tag && modelData.schluessel) {
@@ -100,17 +123,35 @@ Item {
                                         Label {
                                             id: uhr
                                             width: Theme.itemSizeExtraSmall
+                                            anchors.verticalCenter: parent.verticalCenter
                                             text: modelData.zeit || ""
                                             font.pixelSize: Theme.fontSizeExtraSmall
                                             color: Farben.rot
                                         }
+                                        Image {
+                                            id: jbild
+                                            width: Theme.itemSizeExtraSmall
+                                            height: width
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            fillMode: Image.PreserveAspectCrop
+                                            clip: true
+                                            asynchronous: true
+                                            source: modelData.schluessel
+                                                    && ansicht.bilder[modelData.schluessel]
+                                                    ? ansicht.bilder[modelData.schluessel] : ""
+                                            visible: source != "" && status === Image.Ready
+                                        }
                                         Label {
-                                            width: parent.width - uhr.width - Theme.paddingMedium
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            width: parent.width - uhr.width
+                                                   - (jbild.visible ? jbild.width + Theme.paddingMedium : 0)
+                                                   - Theme.paddingMedium
                                             text: modelData.titel || ""
                                             wrapMode: Text.Wrap
                                             maximumLineCount: 2
                                             elide: Text.ElideRight
                                             font.pixelSize: Theme.fontSizeSmall
+                                            color: Farben.schrift
                                         }
                                     }
                                 }
