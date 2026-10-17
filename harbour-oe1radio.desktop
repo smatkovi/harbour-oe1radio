@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+X-Nemo-Application-Type=silica-qt5
+Icon=harbour-oe1radio
+Exec=harbour-oe1radio
+Name=Ö1 Radio
+Name[de]=Ö1 Radio
+
+[X-Sailjail]
+# Muessen zu main.cpp passen, sonst merkt sich die App ueber das Icon nichts.
+OrganizationName=harbour-oe1radio
+ApplicationName=harbour-oe1radio
+# Audio ist Pflicht: ohne die Berechtigung spielt MediaPlayer im Sandkasten
+# *stumm* weiter, ohne Fehler -- genau die Art Stille, die man lange sucht.
+Permissions=Audio;Internet
